@@ -1,9 +1,10 @@
 topic: ~moves()
 # Defining extra concepts out of words or group of words
 #concept:(hello) [hello hi hey "good morning" greetings]
-concept: (move) [vasen oikea ylös alas]
+concept: (move) [vasen oikea ylös alas ammu]
 concept: (stop) ["lopeta peli"]
 concept: (reply) [liikun]
+concept: (hints) ["kuulet siipien lepatusta" "haistat wumpuksen" "tunnet kylmän viiman"]
 
 # Replying to speech
 u:(~move) ~reply
