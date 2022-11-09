@@ -1,0 +1,6 @@
+topic: ~discussion()
+# Defining extra concepts out of words or group of words
+
+# Replying to speech
+u:(minun nimeni on  _*) kiva tavata $1, mikä minun nimeni on? $name=$1
+u:(["sinun nimesi on _*" "sinä olet _*"]) minun nimeni on $1 $peppername=$1
