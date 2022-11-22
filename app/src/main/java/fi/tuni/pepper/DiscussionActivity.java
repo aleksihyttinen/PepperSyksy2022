@@ -1,5 +1,7 @@
 package fi.tuni.pepper;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,8 +30,7 @@ import com.aldebaran.qi.sdk.object.locale.Language;
 import com.aldebaran.qi.sdk.object.locale.Locale;
 import com.aldebaran.qi.sdk.object.locale.Region;
 
-
-public class MainActivity extends RobotActivity implements RobotLifecycleCallbacks {
+public class DiscussionActivity extends RobotActivity implements RobotLifecycleCallbacks {
     private View background;
     private Chat chat;
     private TextView text;
@@ -67,9 +68,9 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
             runOnUiThread(() -> text.setText(heardPhrase.getText()));
         });
         qiChatbot.addOnEndedListener(endPhrase ->{
-            Log.i("testi", "qichatbot end reason = " + endPhrase);
-            chatFuture.requestCancellation();
-        }
+                    Log.i("testi", "qichatbot end reason = " + endPhrase);
+                    chatFuture.requestCancellation();
+                }
         );
         chatFuture.thenConsume(future -> {
             if(future.hasError()){

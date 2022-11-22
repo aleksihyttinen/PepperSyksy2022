@@ -3,14 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="fi.tuni.pepper">
 
+    <uses-feature android:name="com.softbank.hardware.pepper" />
+
     <application
-        tools:replace="android:label"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/PepperSyksy2022"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Pepper">
+        android:theme="@style/Theme.Pepper"
+        tools:replace="android:label">
+        <activity
+            android:name=".DiscussionActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -22,5 +27,4 @@
         </activity>
     </application>
 
-    <uses-feature android:name="com.softbank.hardware.pepper"/>
 </manifest>
