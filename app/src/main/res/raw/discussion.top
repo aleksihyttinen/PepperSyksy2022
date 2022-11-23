@@ -8,8 +8,8 @@ concept:(pinta-ala) "Tampereen pinta-ala on 689 neliökilometriä"
 u: ("Mitä Pepperin kanssa voi tehdä?") "Minun kanssani voit keskustella tai pelata Wumpus-peliä"
     u1: (Mikä on Wumpus?) Wumpus pelissä liikutat hahmoa ja koitat välttää Wumpukseen törmäämistä
 u: (~tampere) "Mitä haluaisit tietää?"
-    u1: ("Mikä on Tampereen pinta ala?") ~pinta-ala
-    u1: ("Mikä on Tampereen asukasluku?") ~asukasluku
+    u1: (* Tampereen pinta ala?) ~pinta-ala
+    u1: (* Tampereen asukasluku?) ~asukasluku
     u1: ("Kerro minulle Tampereen nähtävyyksistä") ~nähtävyydet
     u1: ("Mitä Tampereella voi tehdä?") "Tampereella on paljon erilaista tekemistä, voit käyä esimerkiksi katsomassa suosittuja nähtävyyksiä, tai harrastaa lempi urheilulajiasi"
 u: ("Millainen sää on tänään?") "Tämä toiminto ei ole vielä valmis"

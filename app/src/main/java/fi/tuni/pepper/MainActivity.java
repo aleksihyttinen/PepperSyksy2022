@@ -1,9 +1,11 @@
 package fi.tuni.pepper;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.aldebaran.qi.Future;
@@ -30,24 +32,26 @@ import com.aldebaran.qi.sdk.object.locale.Region;
 
 
 public class MainActivity extends RobotActivity implements RobotLifecycleCallbacks {
-    private View background;
-    private Chat chat;
-    private TextView text;
+    private Button peli;
+    private Button keskustelu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i("create", "created");
         QiSDK.register(this, this);
-        background = findViewById(R.id.background);
-        text = findViewById(R.id.text);
+        Log.i("create", "created");
+        peli = findViewById(R.id.peli);
+        keskustelu = findViewById(R.id.keskustelu);
+        keskustelu.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), DiscussionActivity.class);
+            view.getContext().startActivity(intent);
+        });
     }
 
-    @SuppressLint("ResourceAsColor")
+
     @Override
     public void onRobotFocusGained(QiContext qiContext) {
         Log.i("focus", "focus gained");
-        runOnUiThread(() -> background.setBackgroundColor(R.color.white));
         Animation animation = AnimationBuilder.with(qiContext).withResources(R.raw.wave).build();
         Animate animate = AnimateBuilder.with(qiContext).withAnimation(animation).build();
         animate.async().run();
@@ -55,38 +59,11 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
                 .withText("Hei ihminen!")
                 .build();
         say.run();
-        Topic topic = TopicBuilder.with(qiContext).withResource(R.raw.discussion).build();
-        QiChatbot qiChatbot = QiChatbotBuilder.with(qiContext).withTopic(topic).build();
-
-        Locale locale = new Locale(Language.FINNISH, Region.FINLAND);
-        chat = ChatBuilder.with(qiContext).withChatbot(qiChatbot).withLocale(locale).build();
-        chat.addOnStartedListener(() -> Log.i("testi", "chatti aloitettu"));
-        chat.setListeningBodyLanguage(BodyLanguageOption.DISABLED);
-        Future<Void> chatFuture = chat.async().run();
-        chat.addOnHeardListener(heardPhrase -> {
-            runOnUiThread(() -> text.setText(heardPhrase.getText()));
-        });
-        qiChatbot.addOnEndedListener(endPhrase ->{
-            Log.i("testi", "qichatbot end reason = " + endPhrase);
-            chatFuture.requestCancellation();
-        }
-        );
-        chatFuture.thenConsume(future -> {
-            if(future.hasError()){
-                Log.e("Error", "Discussion finished with error.", future.getError());
-            }
-        });
     }
 
-    @SuppressLint("ResourceAsColor")
     @Override
     public void onRobotFocusLost() {
-        Log.i("focus", "focus lost");
-        runOnUiThread(() -> background.setBackgroundColor(com.google.android.material.R.color.design_default_color_error));
-        if(chat!=null){
-            chat.removeAllOnStartedListeners();
-            chat.removeAllOnHeardListeners();
-        }
+
     }
 
     @Override
@@ -95,8 +72,6 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
     }
     @Override
     public void onDestroy() {
-        // Unregister the RobotLifecycleCallbacks for this Activity.
-        QiSDK.unregister(this, this);
         super.onDestroy();
     }
 }

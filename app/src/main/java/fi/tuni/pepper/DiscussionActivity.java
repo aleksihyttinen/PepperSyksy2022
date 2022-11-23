@@ -3,9 +3,11 @@ package fi.tuni.pepper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.aldebaran.qi.Future;
@@ -34,26 +36,27 @@ public class DiscussionActivity extends RobotActivity implements RobotLifecycleC
     private View background;
     private Chat chat;
     private TextView text;
+    private Button menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_discussion);
         Log.i("create", "created");
         QiSDK.register(this, this);
         background = findViewById(R.id.background);
         text = findViewById(R.id.text);
+        menu = findViewById(R.id.menu);
+        menu.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
+            view.getContext().startActivity(intent);
+        });
     }
 
     @SuppressLint("ResourceAsColor")
     @Override
     public void onRobotFocusGained(QiContext qiContext) {
-        Log.i("focus", "focus gained");
-        runOnUiThread(() -> background.setBackgroundColor(R.color.white));
-        Animation animation = AnimationBuilder.with(qiContext).withResources(R.raw.wave).build();
-        Animate animate = AnimateBuilder.with(qiContext).withAnimation(animation).build();
-        animate.async().run();
         Say say = SayBuilder.with(qiContext)
-                .withText("Hei ihminen!")
+                .withText("Nyt voit keskustella kanssani, voit kysyä kysymyksiä minusta tai Tampereesta")
                 .build();
         say.run();
         Topic topic = TopicBuilder.with(qiContext).withResource(R.raw.discussion).build();

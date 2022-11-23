@@ -15,7 +15,7 @@
         tools:replace="android:label">
         <activity
             android:name=".DiscussionActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
