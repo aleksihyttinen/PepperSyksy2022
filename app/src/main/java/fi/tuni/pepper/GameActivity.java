@@ -31,23 +31,17 @@ import com.aldebaran.qi.sdk.object.locale.Locale;
 import com.aldebaran.qi.sdk.object.locale.Region;
 
 
-public class MainActivity extends RobotActivity implements RobotLifecycleCallbacks {
-    private Button peli;
-    private Button keskustelu;
+public class GameActivity extends RobotActivity implements RobotLifecycleCallbacks {
+    private Button menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_game);
         QiSDK.register(this, this);
         Log.i("create", "created");
-        peli = findViewById(R.id.peli);
-        peli.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), GameActivity.class);
-            view.getContext().startActivity(intent);
-        });
-        keskustelu = findViewById(R.id.keskustelu);
-        keskustelu.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), DiscussionActivity.class);
+        menu = findViewById(R.id.menu);
+        menu.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), MainActivity.class);
             view.getContext().startActivity(intent);
         });
     }
@@ -56,11 +50,8 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
     @Override
     public void onRobotFocusGained(QiContext qiContext) {
         Log.i("focus", "focus gained");
-        Animation animation = AnimationBuilder.with(qiContext).withResources(R.raw.wave).build();
-        Animate animate = AnimateBuilder.with(qiContext).withAnimation(animation).build();
-        animate.async().run();
         Say say = SayBuilder.with(qiContext)
-                .withText("Hei ihminen!")
+                .withText("Tervetuloa pelaamaan Wumpus-peliä")
                 .build();
         say.run();
     }
