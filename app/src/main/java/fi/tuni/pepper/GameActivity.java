@@ -33,6 +33,7 @@ import com.aldebaran.qi.sdk.object.locale.Region;
 
 public class GameActivity extends RobotActivity implements RobotLifecycleCallbacks {
     private Button menu;
+    private Chat chat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +55,33 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 .withText("Tervetuloa pelaamaan Wumpus-peliä")
                 .build();
         say.run();
+        Topic topic = TopicBuilder.with(qiContext).withResource(R.raw.moves).build();
+        QiChatbot qiChatbot = QiChatbotBuilder.with(qiContext).withTopic(topic).build();
+
+        Locale locale = new Locale(Language.FINNISH, Region.FINLAND);
+        chat = ChatBuilder.with(qiContext).withChatbot(qiChatbot).withLocale(locale).build();
+        chat.addOnStartedListener(() -> Log.i("testi", "chatti aloitettu"));
+        chat.setListeningBodyLanguage(BodyLanguageOption.DISABLED);
+        Future<Void> chatFuture = chat.async().run();
+        qiChatbot.addOnEndedListener(endPhrase ->{
+                    Log.i("testi", "qichatbot end reason = " + endPhrase);
+                    chatFuture.requestCancellation();
+                }
+        );
+        chatFuture.thenConsume(future -> {
+            if(future.hasError()){
+                Log.e("Error", "Discussion finished with error.", future.getError());
+            }
+        });
     }
 
     @Override
     public void onRobotFocusLost() {
+        Log.i("focus", "focus lost");
+        if(chat!=null){
+            chat.removeAllOnStartedListeners();
+            chat.removeAllOnHeardListeners();
+        }
 
     }
 
@@ -67,6 +91,8 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
     }
     @Override
     public void onDestroy() {
+        super.onDestroy();        // Unregister the RobotLifecycleCallbacks for this Activity.
+        QiSDK.unregister(this, this);
         super.onDestroy();
     }
 }
