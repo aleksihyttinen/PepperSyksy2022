@@ -3,23 +3,40 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:background="@color/teal_700">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Terve ihminen"
+        android:layout_marginTop="100dp"
+        android:background="@color/teal_200"
+        android:textColor="@color/black"
+        android:textSize="60sp" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/peli"
+        android:layout_width="250dp"
+        android:layout_height="100dp"
         android:layout_gravity="center"
         android:text="Wumpus-peli"
-        android:id="@+id/peli"
-        android:textColor="@color/black">
-    </Button>
+        android:textSize="25sp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="100dp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/teal_200"/>
+
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/keskustelu"
+        android:layout_width="250dp"
+        android:layout_height="100dp"
         android:layout_gravity="center"
         android:text="Keskustelu"
-        android:id="@+id/keskustelu"
-        android:textColor="@color/black">
-    </Button>
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/teal_200"
+        android:layout_marginBottom="100dp"/>
 
 </LinearLayout>
