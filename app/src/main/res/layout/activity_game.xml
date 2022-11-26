@@ -121,7 +121,7 @@
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_margin="5dp"
-            android:background="@drawable/game_grid_player" />
+            android:background="@drawable/game_grid_border" />
 
         <View
             android:id="@+id/r2c3"

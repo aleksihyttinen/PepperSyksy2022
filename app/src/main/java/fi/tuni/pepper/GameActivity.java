@@ -57,6 +57,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         LinearLayout row3 = findViewById(R.id.row3);
         LinearLayout row4 = findViewById(R.id.row4);
         gameBoard = new LinearLayout[]{row0, row1, row2, row3, row4};
+        gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player);
     }
 
 
