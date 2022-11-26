@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Leksi/Desktop/PepperSyksy2022/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.196" />
         <entry key="..\:/Users/Leksi/Desktop/PepperSyksy2022/app/src/main/res/drawable/arrow_back-24px.xml" value="0.196" />
         <entry key="..\:/Users/Leksi/Desktop/PepperSyksy2022/app/src/main/res/drawable/arrow_down.xml" value="0.195" />
         <entry key="..\:/Users/Leksi/Desktop/PepperSyksy2022/app/src/main/res/drawable/arrow_downward-24px.xml" value="0.196" />
@@ -14,6 +15,7 @@
         <entry key="..\:/Users/Leksi/Desktop/PepperSyksy2022/app/src/main/res/drawable/game_grid_border.xml" value="0.196" />
         <entry key="..\:/Users/Leksi/Desktop/PepperSyksy2022/app/src/main/res/drawable/game_grid_player.xml" value="0.196" />
         <entry key="..\:/Users/Leksi/Desktop/PepperSyksy2022/app/src/main/res/drawable/game_grid_player_visited.xml" value="0.196" />
+        <entry key="..\:/Users/Leksi/Desktop/PepperSyksy2022/app/src/main/res/drawable/shoot_button.xml" value="0.195" />
         <entry key="..\:/Users/Leksi/Desktop/PepperSyksy2022/app/src/main/res/layout/activity_game.xml" value="0.1" />
         <entry key="..\:/Users/alehy/Desktop/Pepper/app/src/main/res/layout/activity_main.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/alehy/Desktop/PepperSyksy2022/app/src/main/res/layout/activity_discussion.xml" value="0.2" />

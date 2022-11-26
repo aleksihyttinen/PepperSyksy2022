@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="530dp"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <Button
         android:id="@+id/menu"
@@ -10,6 +11,17 @@
         android:layout_height="wrap_content"
         android:text="Takaisin valikkoon"
         android:textColor="@color/black" />
+    <LinearLayout
+        android:id="@+id/game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
+        <LinearLayout
+            android:id="@+id/rows"
+            android:layout_width="530dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/row0"
@@ -221,38 +233,53 @@
             android:layout_margin="5dp"
             android:background="@drawable/game_grid_border" />
     </LinearLayout>
-
+        </LinearLayout>
     <LinearLayout
+        android:id="@+id/movement"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <View
-            android:id="@+id/btn_left"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:background="@drawable/arrow_left"
-            android:backgroundTint="@color/black" />
-
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center">
         <View
             android:id="@+id/btn_up"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:background="@drawable/arrow_up"
-            android:backgroundTint="@color/black" />
+            android:backgroundTint="@color/black"
+            android:layout_gravity="center"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <View
+                android:id="@+id/btn_left"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/arrow_left"
+                android:backgroundTint="@color/black" />
+            <View
+                android:id="@+id/btn_shoot"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/shoot_button"
+                android:backgroundTint="@color/black" />
 
+            <View
+                android:id="@+id/btn_right"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/arrow_right"
+                android:backgroundTint="@color/black" />
+
+        </LinearLayout>
         <View
             android:id="@+id/btn_down"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:background="@drawable/arrow_down"
-            android:backgroundTint="@color/black" />
-
-        <View
-            android:id="@+id/btn_right"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:background="@drawable/arrow_right"
-            android:backgroundTint="@color/black" />
+            android:backgroundTint="@color/black"
+            android:layout_gravity="center"/>
+    </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
