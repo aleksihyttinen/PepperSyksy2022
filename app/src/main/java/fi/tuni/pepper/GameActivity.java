@@ -275,7 +275,9 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
 
                             }
                         })
-                        .create().show();
+                        .setCancelable(false)
+                        .create()
+                        .show();
                 //Show death ASCII (text for now)
                 if (collisionType == 1) {
                     gm.printPlayerEaten();
