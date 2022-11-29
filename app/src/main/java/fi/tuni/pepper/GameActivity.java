@@ -1,8 +1,9 @@
 package fi.tuni.pepper;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,22 +30,32 @@ import com.aldebaran.qi.sdk.object.locale.Language;
 import com.aldebaran.qi.sdk.object.locale.Locale;
 import com.aldebaran.qi.sdk.object.locale.Region;
 
+import fi.tuni.pepper.gamelogic.GameManager;
+import fi.tuni.pepper.gamelogic.HuntTheWumpus;
+import fi.tuni.pepper.gamelogic.Player;
+import fi.tuni.pepper.gamelogic.Wumpus;
+
 
 public class GameActivity extends RobotActivity implements RobotLifecycleCallbacks {
+    public static View menu;
+    public static boolean gameOn = true;
     private Chat chat;
     private LinearLayout[] gameBoard;
     private Button voice_btn;
     private Boolean shootMode = false;
-    private int playerX = (int)(Math.random() * 4);
-    private int playerY = (int)(Math.random() * 4);
+    HuntTheWumpus htw = new HuntTheWumpus();
+    GameManager gm = new GameManager();
+    Player player = new Player(gm.generateCoord(), gm.generateCoord());
+    Wumpus wumpus = new Wumpus(gm.generateCoord(), gm.generateCoord());
     private View btn_shoot;
+    private int collisionType = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         QiSDK.register(this, this);
         Log.i("create", "created");
-        Button menu = findViewById(R.id.menu);
+        menu = findViewById(R.id.menu);
         menu.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), MainActivity.class);
             view.getContext().startActivity(intent);
@@ -73,7 +84,8 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         LinearLayout row4 = findViewById(R.id.row4);
         voice_btn = findViewById(R.id.voice);
         gameBoard = new LinearLayout[]{row0, row1, row2, row3, row4};
-        gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player);
+        gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+        gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
     }
 
 
@@ -115,11 +127,11 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         switch(direction) {
             case("ylös"): {
                 if(!shootMode) {
-                    if(playerY != 0) {
+                    if(player.getPlayerYCoordinate() != 0) {
                         runOnUiThread(() -> {
-                            gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            playerY--;
-                            gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player);
+                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
+                            moveAndCheckCollision('w');
+                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
                         });
                     }
                 } else {
@@ -130,11 +142,11 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             }
             case("alas"): {
                 if(!shootMode) {
-                    if(playerY != 4) {
+                    if(player.getPlayerYCoordinate() != 4) {
                         runOnUiThread(() -> {
-                            gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            playerY++;
-                            gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player);
+                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
+                            moveAndCheckCollision('s');
+                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
                         });
                     }
                 } else {
@@ -145,11 +157,11 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             }
             case("vasen"): {
                 if(!shootMode) {
-                    if(playerX != 0) {
+                    if(player.getPlayerXCoordinate() != 0) {
                         runOnUiThread(() -> {
-                            gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            playerX--;
-                            gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player);
+                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
+                            moveAndCheckCollision('a');
+                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
                         });
                     }
                 } else {
@@ -160,11 +172,11 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             }
             case("oikea"): {
                 if(!shootMode) {
-                    if(playerX != 4) {
+                    if(player.getPlayerXCoordinate() != 4) {
                         runOnUiThread(() -> {
-                            gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            playerX++;
-                            gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player);
+                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
+                            moveAndCheckCollision('d');
+                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
                         });
                     }
                 } else {
@@ -220,5 +232,58 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 }
             });
         }).start();
+    }
+    public void moveAndCheckCollision(char dir) {
+        if(gameOn) {
+            gm.displayMap(gm.gameMap);
+            player.movePlayer(dir);
+            collisionType = gm.checkCollisionEvent(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
+            //System.out.println("Collision type: " + collisionType);
+
+            //Sets current updates to the map only after checking the collisions
+            if (collisionType == 0) {
+                gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
+            } else if (collisionType == 3) {
+                //Relocate player to a random spot, check collision again
+                System.out.println("Bats, do this later");
+                gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
+            } else if (collisionType == 1 || collisionType == 2) {
+                System.out.println("hävisit");
+                new AlertDialog.Builder(this)
+                        .setMessage("Hävisit pelin")
+                        .setNegativeButton("Palaa päävalikkoon", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                menu.performClick();
+                            }
+                        })
+                        .setPositiveButton("Pelaa uudelleen", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                gameOn = true;
+                                player.setPlayerYCoordinate(gm.generateCoord());
+                                player.setPlayerXCoordinate(gm.generateCoord());
+                                wumpus.setWumpusStartPosition(gm.generateCoord(), gm.generateCoord());
+                                gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
+                                for (LinearLayout row : gameBoard) {
+                                    for (int j = 0; j < row.getChildCount(); j++) {
+                                        row.getChildAt(j).setBackgroundResource(R.drawable.game_grid_border);
+                                    }
+                                }
+                                gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+
+                            }
+                        })
+                        .create().show();
+                //Show death ASCII (text for now)
+                if (collisionType == 1) {
+                    gm.printPlayerEaten();
+                } else {
+                    gm.printPlayerFall();
+                }
+
+            }
+        }
     }
 }
