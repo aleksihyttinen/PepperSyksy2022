@@ -37,6 +37,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
     private Boolean shootMode = false;
     private int playerX = (int)(Math.random() * 4);
     private int playerY = (int)(Math.random() * 4);
+    private View btn_shoot;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +57,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         btn_down.setOnClickListener((view) -> moveOrShoot("alas"));
         View btn_right = findViewById(R.id.btn_right);
         btn_right.setOnClickListener((view) -> moveOrShoot("oikea"));
-        View btn_shoot = findViewById(R.id.btn_shoot);
+        btn_shoot = findViewById(R.id.btn_shoot);
         btn_shoot.setOnClickListener((view) -> {
             shootMode = !shootMode;
             if (shootMode) {
@@ -121,7 +122,10 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                             gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player);
                         });
                     }
-                } //else shoot
+                } else {
+                    shootMode = false;
+                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                }
                 break;
             }
             case("alas"): {
@@ -133,7 +137,10 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                             gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player);
                         });
                     }
-                }//else shoot
+                } else {
+                    shootMode = false;
+                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                }
                 break;
             }
             case("vasen"): {
@@ -145,7 +152,10 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                             gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player);
                         });
                     }
-                } //else shoot
+                } else {
+                    shootMode = false;
+                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                }
                 break;
             }
             case("oikea"): {
@@ -157,8 +167,19 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                             gameBoard[playerY].getChildAt(playerX).setBackgroundResource(R.drawable.game_grid_player);
                         });
                     }
-                }//else shoot
+                } else {
+                    shootMode = false;
+                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                }
                 break;
+            }
+            case("ammu"): {
+                shootMode = true;
+                btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red));
+            }
+            case("liiku"): {
+                shootMode = false;
+                btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
             }
         }
     }
@@ -184,24 +205,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             });
             chat.addOnHeardListener(heardPhrase -> {
                 Log.i("käsky", heardPhrase.toString());
-                switch (heardPhrase.getText()) {
-                    case ("ylös"): {
-                        moveOrShoot("ylös");
-                        break;
-                    }
-                    case ("alas"): {
-                        moveOrShoot("alas");
-                        break;
-                    }
-                    case ("oikea"): {
-                        moveOrShoot("oikea");
-                        break;
-                    }
-                    case ("vasen"): {
-                        moveOrShoot("vasen");
-                        break;
-                    }
-                }
+                moveOrShoot(heardPhrase.getText());
             });
             qiChatbot.addOnEndedListener(endPhrase -> {
                         Log.i("testi", "qichatbot end reason = " + endPhrase);
