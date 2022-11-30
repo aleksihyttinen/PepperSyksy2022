@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -43,6 +44,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
     private LinearLayout[] gameBoard;
     private Button voice_btn;
     private Boolean shootMode = false;
+    private TextView player_location;
     HuntTheWumpus htw = new HuntTheWumpus();
     GameManager gm = new GameManager();
     Player player = new Player(gm.generateCoord(), gm.generateCoord());
@@ -85,6 +87,8 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         voice_btn = findViewById(R.id.voice);
         gameBoard = new LinearLayout[]{row0, row1, row2, row3, row4};
         gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+        player_location = findViewById(R.id.player_location);
+        player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
         gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
     }
 
@@ -132,6 +136,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
                             moveAndCheckCollision('w');
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+                            player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
                         });
                     }
                 } else {
@@ -147,6 +152,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
                             moveAndCheckCollision('s');
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+                            player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
                         });
                     }
                 } else {
@@ -162,6 +168,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
                             moveAndCheckCollision('a');
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+                            player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
                         });
                     }
                 } else {
@@ -177,6 +184,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
                             moveAndCheckCollision('d');
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+                            player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
                         });
                     }
                 } else {
@@ -262,8 +270,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
                                 gameOn = true;
-                                player.setPlayerYCoordinate(gm.generateCoord());
-                                player.setPlayerXCoordinate(gm.generateCoord());
+                                player.setPlayerStartPosition(gm.generateCoord(), gm.generateCoord());
                                 wumpus.setWumpusStartPosition(gm.generateCoord(), gm.generateCoord());
                                 gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
                                 for (LinearLayout row : gameBoard) {

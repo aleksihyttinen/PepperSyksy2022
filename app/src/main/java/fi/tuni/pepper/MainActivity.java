@@ -56,9 +56,9 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
     @Override
     public void onRobotFocusGained(QiContext qiContext) {
         Log.i("focus", "focus gained");
-        //Animation animation = AnimationBuilder.with(qiContext).withResources(R.raw.wave).build();
-        //Animate animate = AnimateBuilder.with(qiContext).withAnimation(animation).build();
-        //animate.async().run();
+        Animation animation = AnimationBuilder.with(qiContext).withResources(R.raw.wave).build();
+        Animate animate = AnimateBuilder.with(qiContext).withAnimation(animation).build();
+        animate.async().run();
         Say say = SayBuilder.with(qiContext)
                 .withText("Hei ihminen!")
                 .build();
