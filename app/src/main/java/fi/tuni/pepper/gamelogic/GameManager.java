@@ -25,7 +25,6 @@ public class GameManager{
     public int colAnswer = 0;
 
     public String[][] generateMap(int playerY, int playerX, Wumpus wumpus) {
-
         //Generate an empty base layout
         for(int i=0; i <= maxCoord; i++ ) {
             for(int j=0; j <= maxCoord; j++) {

@@ -13,7 +13,10 @@ public class Player{
         playerX = x;
         playerY = y;
     }
-
+    public void setPlayerStartPosition(int x, int y) {
+        playerX = x;
+        playerY = y;
+    }
     public final char playerUp = 'w';
     public final char playerDown = 's';
     public final char playerLeft = 'a';
