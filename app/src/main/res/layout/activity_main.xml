@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_gravity="center"
-    android:background="@color/teal_700">
+    android:background="@color/yale_blue">
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,11 +13,14 @@
         android:layout_gravity="center"
         android:text="Terve ihminen"
         android:layout_marginTop="100dp"
-        android:background="@color/teal_200"
+        android:background="@drawable/rounded_flame_borders"
         android:textColor="@color/black"
-        android:textSize="60sp" />
+        android:textSize="60sp"
+        android:padding="20dp"
 
-    <Button
+        />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/peli"
         android:layout_width="250dp"
         android:layout_height="100dp"
@@ -26,9 +30,12 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="100dp"
         android:textColor="@color/black"
-        android:backgroundTint="@color/teal_200"/>
+        app:strokeColor="@color/flame"
+        app:strokeWidth="5dp"
+        app:backgroundTint="@color/silver"
+        app:cornerRadius="15dp"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/keskustelu"
         android:layout_width="250dp"
         android:layout_height="100dp"
@@ -36,7 +43,10 @@
         android:text="Keskustelu"
         android:textSize="25sp"
         android:textColor="@color/black"
-        android:backgroundTint="@color/teal_200"
-        android:layout_marginBottom="100dp"/>
+        android:layout_marginBottom="100dp"
+        app:strokeColor="@color/flame"
+        app:strokeWidth="5dp"
+        app:backgroundTint="@color/silver"
+        app:cornerRadius="15dp"/>
 
 </LinearLayout>
