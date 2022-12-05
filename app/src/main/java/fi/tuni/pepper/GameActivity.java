@@ -62,6 +62,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         menu = findViewById(R.id.menu);
         menu.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), MainActivity.class);
+            intent.putExtra("fromOtherActivity", true);
             view.getContext().startActivity(intent);
         });
         View btn_left = findViewById(R.id.btn_left);
@@ -275,29 +276,21 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             } else if (collisionType == 1 || collisionType == 2) {
                 System.out.println("hävisit");
                 new AlertDialog.Builder(this)
-                        .setMessage("Hävisit pelin")
-                        .setNegativeButton("Palaa päävalikkoon", new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                menu.performClick();
-                            }
-                        })
-                        .setPositiveButton("Pelaa uudelleen", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                gameOn = true;
-                                player.setPlayerStartPosition(gm.generateCoord(), gm.generateCoord());
-                                wumpus.setWumpusStartPosition(gm.generateCoord(), gm.generateCoord());
-                                gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
-                                for (LinearLayout row : gameBoard) {
-                                    for (int j = 0; j < row.getChildCount(); j++) {
-                                        row.getChildAt(j).setBackgroundResource(R.drawable.game_grid_border);
-                                    }
+                        .setMessage(collisionType == 1 ? "Törmäsit Wumpukseen, hävisit pelin" : collisionType == 2 ? "Tipuit kuoppaan, hävisit pelin": "Hävisit pelin")
+                        .setNegativeButton("Palaa päävalikkoon", (arg0, arg1) -> menu.performClick())
+                        .setPositiveButton("Pelaa uudelleen", (arg0, arg1) -> {
+                            gameOn = true;
+                            player.setPlayerStartPosition(gm.generateCoord(), gm.generateCoord());
+                            wumpus.setWumpusStartPosition(gm.generateCoord(), gm.generateCoord());
+                            gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
+                            for (LinearLayout row : gameBoard) {
+                                for (int j = 0; j < row.getChildCount(); j++) {
+                                    row.getChildAt(j).setBackgroundResource(R.drawable.game_grid_border);
                                 }
-                                gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
-
                             }
+                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+                            player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
+
                         })
                         .setCancelable(false)
                         .create()

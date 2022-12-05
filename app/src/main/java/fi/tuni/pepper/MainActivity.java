@@ -34,11 +34,20 @@ import com.aldebaran.qi.sdk.object.locale.Region;
 public class MainActivity extends RobotActivity implements RobotLifecycleCallbacks {
     private Button peli;
     private Button keskustelu;
+    private Boolean playAnimation = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         QiSDK.register(this, this);
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                playAnimation= true;
+            } else {
+                playAnimation= false;
+            }
+        }
         Log.i("create", "created");
         peli = findViewById(R.id.peli);
         peli.setOnClickListener(view -> {
@@ -56,9 +65,11 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
     @Override
     public void onRobotFocusGained(QiContext qiContext) {
         Log.i("focus", "focus gained");
-        Animation animation = AnimationBuilder.with(qiContext).withResources(R.raw.wave).build();
-        Animate animate = AnimateBuilder.with(qiContext).withAnimation(animation).build();
-        animate.async().run();
+        if(playAnimation) {
+            Animation animation = AnimationBuilder.with(qiContext).withResources(R.raw.wave).build();
+            Animate animate = AnimateBuilder.with(qiContext).withAnimation(animation).build();
+            animate.async().run();
+        }
         Say say = SayBuilder.with(qiContext)
                 .withText("Hei ihminen!")
                 .build();
