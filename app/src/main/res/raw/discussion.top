@@ -13,5 +13,5 @@ u: (~tampere) "Mitä haluaisit tietää?"
     u1: ("Kerro minulle Tampereen nähtävyyksistä") ~nähtävyydet
     u1: ("Mitä Tampereella voi tehdä?") "Tampereella on paljon erilaista tekemistä, voit käyä esimerkiksi katsomassa suosittuja nähtävyyksiä, tai harrastaa lempi urheilulajiasi"
 u: ("Millainen sää on tänään?") "Tämä toiminto ei ole vielä valmis"
-
+u: (liiku) "liikun"
 u:(lopeta keskustelu) lopetan kuuntelun ^endDiscuss("Keskustelu lopetettu")
