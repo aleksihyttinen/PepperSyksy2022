@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class HuntTheWumpus {
 
     public int collisionType = 0;
+    public static boolean gameOn = true;
 
     public static void main(String[] args) {
         //Scanner menusc = new Scanner(System.in);
@@ -24,10 +25,10 @@ public class HuntTheWumpus {
         Scanner sc = new Scanner(System.in);
         Wumpus wumpus = new Wumpus(gm.generateCoord(), gm.generateCoord());
 
-        System.out.println("You start at: " + player.getPlayerYCoordinate() +":" + player.getPlayerXCoordinate());
+        System.out.println("You start at: " + player.getPlayerYCoordinate() + ":" + player.getPlayerXCoordinate());
         gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
 
-        boolean gameOn = true;
+        gameOn = true;
         char dir = 'N';
         char arrowDir = 'N';
         boolean arrowHit = false;
@@ -48,7 +49,7 @@ public class HuntTheWumpus {
                     dir = sc.next().charAt(0);
 
 
-                } catch(Exception e) {
+                } catch (Exception e) {
 
                     System.out.println("Please give only single character![wasd]");
 
@@ -58,12 +59,12 @@ public class HuntTheWumpus {
 
                 System.out.println("Given input: " + dir);
 
-            } while(dir == 'N');
+            } while (dir == 'N');
 
             //Check player shooting commands
-            if(dir == 'f') {
+            if (dir == 'f') {
                 //Take shooting direction and check if hit IF you have ammo left
-                if(player.getPlayerArrows() > 0) {
+                if (player.getPlayerArrows() > 0) {
 
                     boolean isAiming = true;
                     //Player shooting loop
@@ -76,7 +77,7 @@ public class HuntTheWumpus {
                             //Take arrow direction
                             arrowDir = sc.next().charAt(0);
 
-                        } catch(Exception e) {
+                        } catch (Exception e) {
                             System.out.println("Invalid input!");
                             isAiming = false;
                         }
@@ -84,28 +85,28 @@ public class HuntTheWumpus {
 
                         isAiming = false;
 
-                    } while(isAiming);
+                    } while (isAiming);
 
                     //Set shooting direction with int 1-4
                     int arrowStep = 0;
 
                     //Possible aim directions with aim limit checks
-                    if(arrowDir == 'w') {
-                        if(player.getPlayerYCoordinate() > 0) {
+                    if (arrowDir == 'w') {
+                        if (player.getPlayerYCoordinate() > 0) {
                             arrowStep = 1;
                         }
                     } else if (arrowDir == 's') {
-                        if(player.getPlayerYCoordinate() < 4) {
+                        if (player.getPlayerYCoordinate() < 4) {
                             arrowStep = 2;
                         }
 
                     } else if (arrowDir == 'a') {
-                        if(player.getPlayerXCoordinate() > 0) {
+                        if (player.getPlayerXCoordinate() > 0) {
                             arrowStep = 3;
                         }
 
-                    } else if(arrowDir == 'd') {
-                        if(player.getPlayerXCoordinate() < 4) {
+                    } else if (arrowDir == 'd') {
+                        if (player.getPlayerXCoordinate() < 4) {
                             arrowStep = 4;
                         }
 
@@ -114,7 +115,7 @@ public class HuntTheWumpus {
                         arrowDir = 'g';
                     }
 
-                    if(!(arrowDir == 'g')) {
+                    if (!(arrowDir == 'g')) {
                         //Remove one arrow from inventory
                         player.setPlayerArrows(-1);
                         arrowHit = gm.checkArrowHit(arrowStep, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
@@ -133,6 +134,7 @@ public class HuntTheWumpus {
             //System.out.println("Player at: " + player.getPlayerYCoordinate() +":" + player.getPlayerXCoordinate());
             gm.showInfo(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
 
+            /* OLD STUFF
             //Check any collisions
             collisionType = gm.checkCollisionEvent(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
             //System.out.println("Collision type: " + collisionType);
@@ -156,21 +158,82 @@ public class HuntTheWumpus {
 
             }
 
+            */
+
+            //NEW CHECK, CAN DO BATS TOO
+            //Check any collisions after moving
+            collisionType = gm.checkCollisionEvent(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
+            //System.out.println("Collision type: " + collisionType);
+
+            //IF we hit a bat spot
+            if (collisionType == 3) {
+                //Relocate player to a random spot, check collision again
+                System.out.println("Bats pick you up!");
+
+                //Relocate and check collisions type for the bat move
+                int batCol = gm.checkBatThrow(player);//goes to checkCollisionEvent()
+
+                //THIS SHOULD NOT GO TO BAT SPOT AGAIN!
+                respondToCollision(batCol, gm, player, wumpus);
+                //Only then update the map changes (might be safe spot or not)
+                //gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
+
+            } else {
+                respondToCollision(collisionType, gm, player, wumpus);
+            }
+
             //YOU WIN
-            if(arrowHit) {
+            if (arrowHit) {
                 gameOn = false;
                 gm.printPlayerWin();
             }
 
-        } while(gameOn);
+        } while (gameOn);
+
 
         sc.close();
 
         System.out.println("Thank you for playing!");
     }
 
-    //Simple menu loop
-    //NOT Currently used
+    //Make a response based on collisions after player movement
+    public static void respondToCollision(int collisionType, GameManager gm, Player player, Wumpus wumpus) {
+
+        //Sets current updates to the map only after checking the collisions
+        if (collisionType == 0) {
+            //No collision, continue normally
+            gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
+
+        } else if (collisionType == 3) {
+            //Relocate player to a random spot, check collision again
+            System.out.println("Bats pick you up!");
+
+            //Relocate and check collisions type for the bat move
+            int batCol = gm.checkBatThrow(player);//goes to checkCollisionEvent()
+
+            //Only then update the map changes (might be safe spot or not)
+            gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
+
+        } else if (collisionType == 4) {
+            //Give player an arrow, remove arrow from spot
+            System.out.println("You found an arrow!");
+            player.setPlayerArrows(1);
+            gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
+
+        } else if (collisionType == 1 || collisionType == 2) {
+            gameOn = false;
+
+            //Show death ASCII (text for now)
+            if (collisionType == 1) {
+                gm.printPlayerEaten();
+            } else {
+                gm.printPlayerFall();
+            }
+        }
+
+
+        //Simple menu loop
+        //NOT Currently used
         /*
         boolean runMenu = true;
         char menuAnswer = '0';
@@ -200,5 +263,6 @@ public class HuntTheWumpus {
             System.out.println("Good bye");
         }
         */
+    }
 }
 

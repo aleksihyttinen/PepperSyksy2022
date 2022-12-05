@@ -1,5 +1,7 @@
 package fi.tuni.pepper.gamelogic;
 
+import java.util.HashSet;
+
 public class GameManager{
 
     //Map limits for 2D Array map
@@ -88,8 +90,44 @@ public class GameManager{
         }
 
         //Place bats spot
+        //Place bat spot to a free location
+        boolean batsPlaced = false;
+        int batY = 0;
+        int batX = 0;
 
+        while(!batsPlaced) {
+            batY = generateCoord();
+            batX = generateCoord();
+            for(int i=0; i <= maxCoord; i++ ) {
+                for(int j=0; j <= maxCoord; j++) {
+                    //Consider only if spot is empty
+                    if(gameMap[i][j] == emptyMark) {
+                        //Place if coordinates for empty spot match
+                        if(i == batY && j == batX) {
+                            gameMap[i][j] = batMark;
+                            batsPlaced = true;
+                        }
+                    }
+                }
+            }
+        }
         //Place arrows
+        //Place arrow (might be spawned if free spot)
+        //Coords
+        int arrowY = generateCoord();
+        int arrowX = generateCoord();
+
+        for(int i=0; i <= maxCoord; i++ ) {
+            for(int j=0; j <= maxCoord; j++) {
+                //Check if spot is empty
+                if(gameMap[i][j] == emptyMark) {
+                    //Place if coordinates for empty spot match
+                    if(i == arrowY && j == arrowX) {
+                        gameMap[i][j] = arrowMark;
+                    }
+                }
+            }
+        }
 
         //return the generated map
         return gameMap;
@@ -181,12 +219,74 @@ public class GameManager{
 
     //Parse all hazards nearby within limits (one step from Player?)
     public void parsePlayerVicinity(int playerY, int playerX) {
+
+        System.out.println("You are at " + playerY + ":" + playerX);
+
+        //Set for hazards ()
+        HashSet<String> hazardSet = new HashSet<String>();
+
         //Parse the map based from player's x and y
         for(int y = -1; y < 2; y++) {
-            for(int x = -1; y < 2; x++) {
+            //System.out.println("Inside Y parse");
+            for(int x = -1; x < 2; x++) {
+                //System.out.println("Inside X parse");
+                //No need to check player's spot 0:0 at all
+                if(!(x == 0 && y == 0)) {
+                    int vicY = playerY + y;
+                    int vicX = playerX + x;
+                    //System.out.println("Parse at: " + vicY +":" + vicX);
+                    //Check if the spot x,y are within the max/min values
+                    if((vicY >= minCoord && vicY <= maxCoord) && (vicX >= minCoord && vicX <= maxCoord)) {
+                        //System.out.println("Inside parse");
+                        if(gameMap[vicY][vicX] == pitMark || gameMap[vicY][vicX] == wumpusMark || gameMap[vicY][vicX] == batMark) {
+                            //System.out.println(gameMap[vicY][vicX]);
+                            hazardSet.add(gameMap[vicY][vicX]);
+                        }
+                    }
+
+                }
 
             }
         }
+
+        //Print hazard texts if found from the hashset
+        for(String haz : hazardSet) {
+            switch(haz) {
+                case "[W]":
+                    System.out.println("You smell Wumpus!");
+                    break;
+                case "[U]":
+                    System.out.println("You feel a strong breeze!");
+                    break;
+                case "[B]":
+                    System.out.println("You hear wings flapping!");
+            }
+        }
+
+    }
+
+    //Throw player to new spot, check collision type
+    public int checkBatThrow(Player player) {
+
+        //Generate new coords first and check their uniqueness
+        int newY = 0;
+        int newX = 0;
+
+        do {
+            newY = generateCoord();
+            newX = generateCoord();
+            System.out.println("New y,x " + newY + ":" + newX);
+        } while(newY == player.getPlayerYCoordinate() && newX == player.getPlayerXCoordinate());
+
+        //Send player to new random location
+        player.setPlayerStartPosition(newY, newX);
+
+        //Quick info check
+        System.out.println("Player thrown at: " + player.getPlayerYCoordinate() + ":" + player.getPlayerXCoordinate());
+
+        int batCol = checkCollisionEvent(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
+
+        return batCol;
     }
 
     //Check after Player has moved if there is anything else on the spot
