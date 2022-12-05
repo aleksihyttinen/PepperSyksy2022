@@ -258,6 +258,7 @@
                     android:textSize="24sp"
                     android:layout_gravity="center"/>
                 <TextView
+                    android:id="@+id/wumpus_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
@@ -265,18 +266,21 @@
                     android:layout_gravity="center"/>
 
                 <TextView
+                    android:id="@+id/bats_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text=""
                     android:textSize="24sp" />
                 <TextView
+                    android:id="@+id/pits_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textSize="24sp"
                     android:layout_gravity="center"/>
                 <TextView
+                    android:id="@+id/arrow_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""

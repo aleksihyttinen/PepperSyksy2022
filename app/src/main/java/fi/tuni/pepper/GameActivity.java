@@ -47,12 +47,15 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
     private Button voice_btn;
     private Boolean shootMode = false;
     private TextView player_location;
+    private TextView wumpus_message;
+    private TextView bats_message;
+    private TextView pits_message;
+    private TextView arrow_message;
     HuntTheWumpus htw = new HuntTheWumpus();
     GameManager gm = new GameManager();
     Player player = new Player(gm.generateCoord(), gm.generateCoord());
     Wumpus wumpus = new Wumpus(gm.generateCoord(), gm.generateCoord());
     private View btn_shoot;
-    private int collisionType = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +94,10 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         gameBoard = new LinearLayout[]{row0, row1, row2, row3, row4};
         gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
         player_location = findViewById(R.id.player_location);
+        wumpus_message = findViewById(R.id.wumpus_message);
+        bats_message = findViewById(R.id.bats_message);
+        pits_message = findViewById(R.id.pits_message);
+        arrow_message = findViewById(R.id.arrow_message);
         player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
         gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
     }
@@ -137,7 +144,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     if(player.getPlayerYCoordinate() != 0) {
                         runOnUiThread(() -> {
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            moveAndCheckCollision('w');
+                            movePlayer('w');
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
                             player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
                         });
@@ -146,7 +153,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
                     if(gm.checkArrowHit(2, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                        gameOn = false;
+                        endGame(5);
                     }
                 }
                 break;
@@ -156,7 +163,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     if(player.getPlayerYCoordinate() != 4) {
                         runOnUiThread(() -> {
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            moveAndCheckCollision('s');
+                            movePlayer('s');
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
                             player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
                         });
@@ -165,7 +172,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
                     if(gm.checkArrowHit(1, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                        gameOn = false;
+                        endGame(5);
                     }
                 }
                 break;
@@ -175,7 +182,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     if(player.getPlayerXCoordinate() != 0) {
                         runOnUiThread(() -> {
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            moveAndCheckCollision('a');
+                            movePlayer('a');
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
                             player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
                         });
@@ -184,7 +191,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
                     if(gm.checkArrowHit(3, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                        gameOn = false;
+                        endGame(5);
                     }
                 }
                 break;
@@ -194,7 +201,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     if(player.getPlayerXCoordinate() != 4) {
                         runOnUiThread(() -> {
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            moveAndCheckCollision('d');
+                            movePlayer('d');
                             gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
                             player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
                         });
@@ -203,7 +210,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
                     if(gm.checkArrowHit(4, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                        gameOn = false;
+                        endGame(5);
                     }
                 }
                 break;
@@ -218,7 +225,6 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             }
         }
     }
-
     private void startVoiceControl(QiContext qiContext) {
         runOnUiThread(()-> voice_btn.setText("Lopeta ääniohjaus"));
 
@@ -256,53 +262,80 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             });
         }).start();
     }
-    public void moveAndCheckCollision(char dir) {
+    private void updateDangerMessages(HashSet<String> dangers) {
+        for(String haz : dangers) {
+            switch(haz) {
+                case "[W]":
+                    wumpus_message.setText("Haistat Wumpuksen!");
+                    break;
+                case "[U]":
+                    pits_message.setText("Tunnet kylmän viiman");
+                    break;
+                case "[B]":
+                    bats_message.setText("Kuulet siipien lepatusta");
+                    break;
+            }
+        }
+    }
+    private void endGame(int endReason) {
+        gameOn = false;
+        System.out.println("hävisit");
+        new AlertDialog.Builder(this)
+                .setMessage(endReason == 5 ? "Voitit pelin!": endReason == 1 ? "Törmäsit Wumpukseen, hävisit pelin" : endReason == 2 ? "Tipuit kuoppaan, hävisit pelin" : "Hävisit pelin")
+                .setNegativeButton("Palaa päävalikkoon", (arg0, arg1) -> menu.performClick())
+                .setPositiveButton("Pelaa uudelleen", (arg0, arg1) -> {
+                    gameOn = true;
+                    player.setPlayerStartPosition(gm.generateCoord(), gm.generateCoord());
+                    wumpus.setWumpusStartPosition(gm.generateCoord(), gm.generateCoord());
+                    gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
+                    for (LinearLayout row : gameBoard) {
+                        for (int j = 0; j < row.getChildCount(); j++) {
+                            row.getChildAt(j).setBackgroundResource(R.drawable.game_grid_border);
+                        }
+                    }
+                    gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+                    player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
+
+                })
+                .setCancelable(false)
+                .create()
+                .show();
+    }
+    public void checkCollisionAndUpdate(int collisionType) {
+        if (collisionType == 0) {
+            gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
+        } else if (collisionType == 3) {
+            int batCol = gm.checkBatThrow(player);//goes to checkCollisionEvent()
+            if(batCol != 1 && batCol != 2 ) {
+                gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
+                gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+                gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
+                checkCollisionAndUpdate(batCol);
+            } else {
+                endGame(batCol);
+            }
+        } else if(collisionType == 4) {
+            player.setPlayerArrows(1);
+            arrow_message.setText("Löysit nuolen!");
+            gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
+        } else if (collisionType == 1 || collisionType == 2) {
+            endGame(collisionType);
+        }
+    }
+    public void movePlayer(char dir) {
+        arrow_message.setText("");
+        wumpus_message.setText("");
+        bats_message.setText("");
+        pits_message.setText("");
         if(gameOn) {
             gm.displayMap(gm.gameMap);
             player.movePlayer(dir);
-            collisionType = gm.checkCollisionEvent(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
+            int collisionType = gm.checkCollisionEvent(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
             //System.out.println("Collision type: " + collisionType);
             HashSet<String> dangers = gm.parsePlayerVicinity(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
-            //updateMessages(dangers)
+            updateDangerMessages(dangers);
             //Sets current updates to the map only after checking the collisions
-            if (collisionType == 0) {
-                gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
-            } else if (collisionType == 3) {
-                gm.checkBatThrow(player);//goes to checkCollisionEvent()
-                gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
-            } else if(collisionType == 4) {
-                player.setPlayerArrows(1);
-                gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
-            } else if (collisionType == 1 || collisionType == 2) {
-                System.out.println("hävisit");
-                new AlertDialog.Builder(this)
-                        .setMessage(collisionType == 1 ? "Törmäsit Wumpukseen, hävisit pelin" : collisionType == 2 ? "Tipuit kuoppaan, hävisit pelin": "Hävisit pelin")
-                        .setNegativeButton("Palaa päävalikkoon", (arg0, arg1) -> menu.performClick())
-                        .setPositiveButton("Pelaa uudelleen", (arg0, arg1) -> {
-                            gameOn = true;
-                            player.setPlayerStartPosition(gm.generateCoord(), gm.generateCoord());
-                            wumpus.setWumpusStartPosition(gm.generateCoord(), gm.generateCoord());
-                            gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
-                            for (LinearLayout row : gameBoard) {
-                                for (int j = 0; j < row.getChildCount(); j++) {
-                                    row.getChildAt(j).setBackgroundResource(R.drawable.game_grid_border);
-                                }
-                            }
-                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
-                            player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
-
-                        })
-                        .setCancelable(false)
-                        .create()
-                        .show();
-                //Show death ASCII (text for now)
-                if (collisionType == 1) {
-                    gm.printPlayerEaten();
-                } else {
-                    gm.printPlayerFall();
-                }
-
-            }
+            checkCollisionAndUpdate(collisionType);
         }
     }
 }
