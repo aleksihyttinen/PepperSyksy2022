@@ -218,7 +218,7 @@ public class GameManager{
     }
 
     //Parse all hazards nearby within limits (one step from Player?)
-    public void parsePlayerVicinity(int playerY, int playerX) {
+    public HashSet<String> parsePlayerVicinity(int playerY, int playerX) {
 
         System.out.println("You are at " + playerY + ":" + playerX);
 
@@ -262,7 +262,7 @@ public class GameManager{
                     System.out.println("You hear wings flapping!");
             }
         }
-
+    return hazardSet;
     }
 
     //Throw player to new spot, check collision type
@@ -317,7 +317,7 @@ public class GameManager{
                 colAnswer = 3;
                 break;
             case "[A]":
-                colAnswer = 3;
+                colAnswer = 4;
                 break;
             default:
                 colAnswer = 0;

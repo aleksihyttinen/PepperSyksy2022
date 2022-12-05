@@ -31,6 +31,8 @@ import com.aldebaran.qi.sdk.object.locale.Language;
 import com.aldebaran.qi.sdk.object.locale.Locale;
 import com.aldebaran.qi.sdk.object.locale.Region;
 
+import java.util.HashSet;
+
 import fi.tuni.pepper.gamelogic.GameManager;
 import fi.tuni.pepper.gamelogic.HuntTheWumpus;
 import fi.tuni.pepper.gamelogic.Player;
@@ -142,6 +144,9 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 } else {
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                    if(gm.checkArrowHit(2, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                        gameOn = false;
+                    }
                 }
                 break;
             }
@@ -158,6 +163,9 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 } else {
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                    if(gm.checkArrowHit(1, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                        gameOn = false;
+                    }
                 }
                 break;
             }
@@ -174,6 +182,9 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 } else {
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                    if(gm.checkArrowHit(3, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                        gameOn = false;
+                    }
                 }
                 break;
             }
@@ -190,6 +201,9 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 } else {
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                    if(gm.checkArrowHit(4, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                        gameOn = false;
+                    }
                 }
                 break;
             }
@@ -247,13 +261,16 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             player.movePlayer(dir);
             collisionType = gm.checkCollisionEvent(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
             //System.out.println("Collision type: " + collisionType);
-
+            HashSet<String> dangers = gm.parsePlayerVicinity(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
+            //updateMessages(dangers)
             //Sets current updates to the map only after checking the collisions
             if (collisionType == 0) {
                 gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
             } else if (collisionType == 3) {
-                //Relocate player to a random spot, check collision again
-                System.out.println("Bats, do this later");
+                gm.checkBatThrow(player);//goes to checkCollisionEvent()
+                gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
+            } else if(collisionType == 4) {
+                player.setPlayerArrows(1);
                 gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
             } else if (collisionType == 1 || collisionType == 2) {
                 System.out.println("hävisit");
