@@ -152,7 +152,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 } else {
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                    if(gm.checkArrowHit(2, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                    if(gm.checkArrowHit(1, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
                         endGame(5);
                     }
                 }
@@ -171,7 +171,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 } else {
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                    if(gm.checkArrowHit(1, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                    if(gm.checkArrowHit(2, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
                         endGame(5);
                     }
                 }
@@ -263,6 +263,10 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         }).start();
     }
     private void updateDangerMessages(HashSet<String> dangers) {
+        arrow_message.setText("");
+        wumpus_message.setText("");
+        bats_message.setText("");
+        pits_message.setText("");
         for(String haz : dangers) {
             switch(haz) {
                 case "[W]":
@@ -288,6 +292,8 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     player.setPlayerStartPosition(gm.generateCoord(), gm.generateCoord());
                     wumpus.setWumpusStartPosition(gm.generateCoord(), gm.generateCoord());
                     gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
+                    HashSet<String> dangers = gm.parsePlayerVicinity(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
+                    updateDangerMessages(dangers);
                     for (LinearLayout row : gameBoard) {
                         for (int j = 0; j < row.getChildCount(); j++) {
                             row.getChildAt(j).setBackgroundResource(R.drawable.game_grid_border);
@@ -310,6 +316,8 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
                 gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
                 gm.updateMap(player.getPlayerXCoordinate(), player.getPlayerYCoordinate(), wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
+                HashSet<String> dangers = gm.parsePlayerVicinity(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
+                updateDangerMessages(dangers);
                 checkCollisionAndUpdate(batCol);
             } else {
                 endGame(batCol);
@@ -323,10 +331,6 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         }
     }
     public void movePlayer(char dir) {
-        arrow_message.setText("");
-        wumpus_message.setText("");
-        bats_message.setText("");
-        pits_message.setText("");
         if(gameOn) {
             gm.displayMap(gm.gameMap);
             player.movePlayer(dir);
