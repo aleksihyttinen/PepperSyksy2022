@@ -152,8 +152,17 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 } else {
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                    if(gm.checkArrowHit(1, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                        endGame(5);
+                    player.setPlayerArrows(-1);
+                    if(player.getPlayerYCoordinate() != 0) {
+                        if (gm.checkArrowHit(1, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                            endGame(5);
+                        } else {
+                            arrow_message.setText("Ammuit ohi!");
+                        }
+                    } else if (player.getPlayerArrows() != 0) {
+                        arrow_message.setText("Ammuit ulos kentästä");
+                    } else {
+                        arrow_message.setText("Ei nuolia jäljellä");
                     }
                 }
                 break;
@@ -171,8 +180,17 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 } else {
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                    if(gm.checkArrowHit(2, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                        endGame(5);
+                    player.setPlayerArrows(-1);
+                    if(player.getPlayerYCoordinate() != 4) {
+                        if(gm.checkArrowHit(2, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                            endGame(5);
+                        } else {
+                            arrow_message.setText("Ammuit ohi!");
+                        }
+                    } else if (player.getPlayerArrows() != 0) {
+                        arrow_message.setText("Ammuit ulos kentästä");
+                    } else {
+                        arrow_message.setText("Ei nuolia jäljellä");
                     }
                 }
                 break;
@@ -190,8 +208,17 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 } else {
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                    if(gm.checkArrowHit(3, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                        endGame(5);
+                    player.setPlayerArrows(-1);
+                    if(player.getPlayerXCoordinate() != 0) {
+                        if (gm.checkArrowHit(3, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                            endGame(5);
+                        } else {
+                            arrow_message.setText("Ammuit ohi!");
+                        }
+                    } else if (player.getPlayerArrows() != 0) {
+                        arrow_message.setText("Ammuit ulos kentästä");
+                    } else {
+                        arrow_message.setText("Ei nuolia jäljellä");
                     }
                 }
                 break;
@@ -209,8 +236,17 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 } else {
                     shootMode = false;
                     btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                    if(gm.checkArrowHit(4, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                        endGame(5);
+                    player.setPlayerArrows(-1);
+                    if(player.getPlayerXCoordinate() != 4) {
+                        if (gm.checkArrowHit(4, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                            endGame(5);
+                        } else {
+                            arrow_message.setText("Ammuit ohi!");
+                        }
+                    } else if (player.getPlayerArrows() != 0) {
+                        arrow_message.setText("Ammuit ulos kentästä");
+                    } else {
+                        arrow_message.setText("Ei nuolia jäljellä");
                     }
                 }
                 break;
