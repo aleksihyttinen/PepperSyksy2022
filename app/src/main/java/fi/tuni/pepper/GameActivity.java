@@ -68,6 +68,11 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             intent.putExtra("fromOtherActivity", true);
             view.getContext().startActivity(intent);
         });
+        View guide = findViewById(R.id.guide);
+        guide.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), GuideActivity.class);
+            view.getContext().startActivity(intent);
+        });
         View btn_left = findViewById(R.id.btn_left);
         btn_left.setOnClickListener((view) -> moveOrShoot("vasen"));
         View btn_up = findViewById(R.id.btn_up);
@@ -100,6 +105,8 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         arrow_message = findViewById(R.id.arrow_message);
         player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
         gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
+        HashSet<String> dangers = gm.parsePlayerVicinity(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
+        updateDangerMessages(dangers);
     }
 
 
@@ -137,7 +144,8 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
     }
 
     private void moveOrShoot(String direction) {
-        Log.i("mode", shootMode.toString());
+        System.out.println( shootMode.toString());
+        System.out.println(direction);
         switch(direction) {
             case("ylös"): {
                 if(!shootMode) {
@@ -150,19 +158,29 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                         });
                     }
                 } else {
-                    shootMode = false;
-                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                    player.setPlayerArrows(-1);
-                    if(player.getPlayerYCoordinate() != 0) {
-                        if (gm.checkArrowHit(1, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                            endGame(5);
+                    if (player.getPlayerArrows() != 0) {
+                        shootMode = false;
+                        runOnUiThread(()-> {
+                            btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                        });
+                        player.setPlayerArrows(-1);
+                        if(player.getPlayerYCoordinate() != 0) {
+                            if(gm.checkArrowHit(1, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                                endGame(5);
+                            } else {
+                                runOnUiThread(()-> {
+                                    arrow_message.setText("Ammuit ohi!");
+                                });
+                            }
                         } else {
-                            arrow_message.setText("Ammuit ohi!");
+                            runOnUiThread(()-> {
+                                arrow_message.setText("Ammuit ulos kentästä");
+                            });
                         }
-                    } else if (player.getPlayerArrows() != 0) {
-                        arrow_message.setText("Ammuit ulos kentästä");
                     } else {
-                        arrow_message.setText("Ei nuolia jäljellä");
+                        runOnUiThread(()-> {
+                            arrow_message.setText("Ei nuolia jäljellä");
+                        });
                     }
                 }
                 break;
@@ -178,19 +196,29 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                         });
                     }
                 } else {
-                    shootMode = false;
-                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                    player.setPlayerArrows(-1);
-                    if(player.getPlayerYCoordinate() != 4) {
-                        if(gm.checkArrowHit(2, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                            endGame(5);
+                    if (player.getPlayerArrows() != 0) {
+                        shootMode = false;
+                        runOnUiThread(()-> {
+                            btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                        });
+                        player.setPlayerArrows(-1);
+                        if(player.getPlayerYCoordinate() != 4) {
+                            if(gm.checkArrowHit(2, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                                endGame(5);
+                            } else {
+                                runOnUiThread(()-> {
+                                    arrow_message.setText("Ammuit ohi!");
+                                });
+                            }
                         } else {
-                            arrow_message.setText("Ammuit ohi!");
+                            runOnUiThread(()-> {
+                                arrow_message.setText("Ammuit ulos kentästä");
+                            });
                         }
-                    } else if (player.getPlayerArrows() != 0) {
-                        arrow_message.setText("Ammuit ulos kentästä");
                     } else {
-                        arrow_message.setText("Ei nuolia jäljellä");
+                        runOnUiThread(() -> {
+                            arrow_message.setText("Ei nuolia jäljellä");
+                        });
                     }
                 }
                 break;
@@ -206,19 +234,29 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                         });
                     }
                 } else {
-                    shootMode = false;
-                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                    player.setPlayerArrows(-1);
-                    if(player.getPlayerXCoordinate() != 0) {
-                        if (gm.checkArrowHit(3, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                            endGame(5);
+                    if (player.getPlayerArrows() != 0) {
+                        shootMode = false;
+                        runOnUiThread(() -> {
+                            btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                        });
+                        player.setPlayerArrows(-1);
+                        if(player.getPlayerXCoordinate() != 0) {
+                            if(gm.checkArrowHit(3, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                                endGame(5);
+                            } else {
+                                runOnUiThread(()-> {
+                                    arrow_message.setText("Ammuit ohi!");
+                                });
+                            }
                         } else {
-                            arrow_message.setText("Ammuit ohi!");
+                            runOnUiThread(()-> {
+                                arrow_message.setText("Ammuit ulos kentästä");
+                            });
                         }
-                    } else if (player.getPlayerArrows() != 0) {
-                        arrow_message.setText("Ammuit ulos kentästä");
                     } else {
-                        arrow_message.setText("Ei nuolia jäljellä");
+                        runOnUiThread(() -> {
+                            arrow_message.setText("Ei nuolia jäljellä");
+                        });
                     }
                 }
                 break;
@@ -234,30 +272,49 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                         });
                     }
                 } else {
-                    shootMode = false;
-                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                    player.setPlayerArrows(-1);
-                    if(player.getPlayerXCoordinate() != 4) {
-                        if (gm.checkArrowHit(4, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                            endGame(5);
+                    System.out.println("sisällä");
+                    if (player.getPlayerArrows() != 0) {
+                        System.out.println("sisällä nuolet");
+                        shootMode = false;
+                        runOnUiThread(()-> {
+                            btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                        });
+                        player.setPlayerArrows(-1);
+                        if(player.getPlayerXCoordinate() != 4) {
+                            System.out.println("sisällä 2");
+                            if(gm.checkArrowHit(4, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                                endGame(5);
+                            } else {
+                                runOnUiThread(()-> {
+                                    arrow_message.setText("Ammuit ohi!");
+                                });
+                            }
                         } else {
-                            arrow_message.setText("Ammuit ohi!");
+                            runOnUiThread(()-> {
+                                arrow_message.setText("Ammuit ulos kentästä");
+                            });
                         }
-                    } else if (player.getPlayerArrows() != 0) {
-                        arrow_message.setText("Ammuit ulos kentästä");
                     } else {
-                        arrow_message.setText("Ei nuolia jäljellä");
+                        runOnUiThread(()-> {
+                            arrow_message.setText("Ei nuolia jäljellä");
+                        });
                     }
                 }
                 break;
             }
             case("ammu"): {
                 shootMode = true;
-                btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red));
+                runOnUiThread(() -> {
+                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red));
+                });
+                break;
             }
             case("liiku"): {
                 shootMode = false;
-                btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                runOnUiThread(()-> {
+                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                });
+                break;
             }
         }
     }
@@ -320,28 +377,30 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
     private void endGame(int endReason) {
         gameOn = false;
         System.out.println("hävisit");
-        new AlertDialog.Builder(this)
-                .setMessage(endReason == 5 ? "Voitit pelin!": endReason == 1 ? "Törmäsit Wumpukseen, hävisit pelin" : endReason == 2 ? "Tipuit kuoppaan, hävisit pelin" : "Hävisit pelin")
-                .setNegativeButton("Palaa päävalikkoon", (arg0, arg1) -> menu.performClick())
-                .setPositiveButton("Pelaa uudelleen", (arg0, arg1) -> {
-                    gameOn = true;
-                    player.setPlayerStartPosition(gm.generateCoord(), gm.generateCoord());
-                    wumpus.setWumpusStartPosition(gm.generateCoord(), gm.generateCoord());
-                    gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
-                    HashSet<String> dangers = gm.parsePlayerVicinity(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
-                    updateDangerMessages(dangers);
-                    for (LinearLayout row : gameBoard) {
-                        for (int j = 0; j < row.getChildCount(); j++) {
-                            row.getChildAt(j).setBackgroundResource(R.drawable.game_grid_border);
+        runOnUiThread(() -> {
+            new AlertDialog.Builder(this)
+                    .setMessage(endReason == 5 ? "Voitit pelin!": endReason == 1 ? "Törmäsit Wumpukseen, hävisit pelin" : endReason == 2 ? "Tipuit kuoppaan, hävisit pelin" : "Hävisit pelin")
+                    .setNegativeButton("Palaa päävalikkoon", (arg0, arg1) -> menu.performClick())
+                    .setPositiveButton("Pelaa uudelleen", (arg0, arg1) -> {
+                        gameOn = true;
+                        player.setPlayerStartPosition(gm.generateCoord(), gm.generateCoord());
+                        wumpus.setWumpusStartPosition(gm.generateCoord(), gm.generateCoord());
+                        gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
+                        HashSet<String> dangers = gm.parsePlayerVicinity(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
+                        updateDangerMessages(dangers);
+                        for (LinearLayout row : gameBoard) {
+                            for (int j = 0; j < row.getChildCount(); j++) {
+                                row.getChildAt(j).setBackgroundResource(R.drawable.game_grid_border);
+                            }
                         }
-                    }
-                    gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
-                    player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
+                        gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+                        player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
 
-                })
-                .setCancelable(false)
-                .create()
-                .show();
+                    })
+                    .setCancelable(false)
+                    .create()
+                    .show();
+        });
     }
     public void checkCollisionAndUpdate(int collisionType) {
         if (collisionType == 0) {
