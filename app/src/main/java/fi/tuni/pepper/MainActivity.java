@@ -32,8 +32,6 @@ import com.aldebaran.qi.sdk.object.locale.Region;
 
 
 public class MainActivity extends RobotActivity implements RobotLifecycleCallbacks {
-    private Button peli;
-    private Button keskustelu;
     private Boolean playAnimation = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +47,12 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
             }
         }
         Log.i("create", "created");
-        peli = findViewById(R.id.peli);
+        Button peli = findViewById(R.id.peli);
         peli.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), GameActivity.class);
             view.getContext().startActivity(intent);
         });
-        keskustelu = findViewById(R.id.keskustelu);
+        Button keskustelu = findViewById(R.id.keskustelu);
         keskustelu.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), DiscussionActivity.class);
             view.getContext().startActivity(intent);

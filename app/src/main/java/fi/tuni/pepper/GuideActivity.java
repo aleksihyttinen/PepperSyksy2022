@@ -19,7 +19,6 @@ import com.aldebaran.qi.sdk.object.conversation.Say;
 import org.w3c.dom.Text;
 
 public class GuideActivity extends RobotActivity implements RobotLifecycleCallbacks {
-    private LinearLayout guide_texts;
     private String text = "";
     private View read_btn;
     @Override
@@ -33,7 +32,7 @@ public class GuideActivity extends RobotActivity implements RobotLifecycleCallba
             Intent intent = new Intent(view.getContext(), GameActivity.class);
             view.getContext().startActivity(intent);
         });
-        guide_texts = findViewById(R.id.guide_texts);
+        LinearLayout guide_texts = findViewById(R.id.guide_texts);
         StringBuilder output = new StringBuilder();
         for(int i = 0; i < guide_texts.getChildCount(); i++) {
             TextView child = (TextView) guide_texts.getChildAt(i);

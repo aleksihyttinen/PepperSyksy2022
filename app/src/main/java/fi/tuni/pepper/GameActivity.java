@@ -2,7 +2,6 @@ package fi.tuni.pepper;
 
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -141,163 +140,79 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         super.onDestroy();        // Unregister the RobotLifecycleCallbacks for this Activity.
         QiSDK.unregister(this, this);
     }
-
+    private void move(Character dir) {
+        runOnUiThread(() -> {
+            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
+            movePlayer(dir);
+            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
+            player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
+        });
+    }
+    private void shoot(int dir) {
+        runOnUiThread(()-> {
+            if (player.getPlayerArrows() != 0) {
+                shootMode = false;
+                btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                player.setPlayerArrows(-1);
+                if (gm.checkArrowHit(dir, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
+                    endGame(5);
+                } else {
+                    arrow_message.setText("Ammuit ohi!");
+                }
+            } else {
+                arrow_message.setText("Ei nuolia jäljellä");
+            }
+        });
+    }
     private void moveOrShoot(String direction) {
         System.out.println( shootMode.toString());
         System.out.println(direction);
         switch(direction) {
             case("ylös"): {
-                if(!shootMode) {
-                    if(player.getPlayerYCoordinate() != 0) {
-                        runOnUiThread(() -> {
-                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            movePlayer('w');
-                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
-                            player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
-                        });
-                    }
-                } else {
-                    if (player.getPlayerArrows() != 0) {
-                        shootMode = false;
-                        runOnUiThread(()-> {
-                            btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                        });
-                        player.setPlayerArrows(-1);
-                        if(player.getPlayerYCoordinate() != 0) {
-                            if(gm.checkArrowHit(1, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                                endGame(5);
-                            } else {
-                                runOnUiThread(()-> {
-                                    arrow_message.setText("Ammuit ohi!");
-                                });
-                            }
-                        } else {
-                            runOnUiThread(()-> {
-                                arrow_message.setText("Ammuit ulos kentästä");
-                            });
-                        }
+                if(player.getPlayerYCoordinate() != 0) {
+                    if (!shootMode) {
+                        move('w');
                     } else {
-                        runOnUiThread(()-> {
-                            arrow_message.setText("Ei nuolia jäljellä");
-                        });
+                        shoot(1);
                     }
+                } else if(shootMode) {
+                    runOnUiThread(()-> arrow_message.setText("Ammuit ulos kentästä"));
                 }
                 break;
             }
             case("alas"): {
-                if(!shootMode) {
-                    if(player.getPlayerYCoordinate() != 4) {
-                        runOnUiThread(() -> {
-                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            movePlayer('s');
-                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
-                            player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
-                        });
-                    }
-                } else {
-                    if (player.getPlayerArrows() != 0) {
-                        shootMode = false;
-                        runOnUiThread(()-> {
-                            btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                        });
-                        player.setPlayerArrows(-1);
-                        if(player.getPlayerYCoordinate() != 4) {
-                            if(gm.checkArrowHit(2, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                                endGame(5);
-                            } else {
-                                runOnUiThread(()-> {
-                                    arrow_message.setText("Ammuit ohi!");
-                                });
-                            }
-                        } else {
-                            runOnUiThread(()-> {
-                                arrow_message.setText("Ammuit ulos kentästä");
-                            });
-                        }
+                if(player.getPlayerYCoordinate() != 0) {
+                    if (!shootMode) {
+                        move('s');
                     } else {
-                        runOnUiThread(() -> {
-                            arrow_message.setText("Ei nuolia jäljellä");
-                        });
+                        shoot(2);
                     }
+                } else if(shootMode) {
+                    runOnUiThread(()-> arrow_message.setText("Ammuit ulos kentästä"));
                 }
                 break;
             }
             case("vasen"): {
-                if(!shootMode) {
-                    if(player.getPlayerXCoordinate() != 0) {
-                        runOnUiThread(() -> {
-                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            movePlayer('a');
-                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
-                            player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
-                        });
-                    }
-                } else {
-                    if (player.getPlayerArrows() != 0) {
-                        shootMode = false;
-                        runOnUiThread(() -> {
-                            btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                        });
-                        player.setPlayerArrows(-1);
-                        if(player.getPlayerXCoordinate() != 0) {
-                            if(gm.checkArrowHit(3, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                                endGame(5);
-                            } else {
-                                runOnUiThread(()-> {
-                                    arrow_message.setText("Ammuit ohi!");
-                                });
-                            }
-                        } else {
-                            runOnUiThread(()-> {
-                                arrow_message.setText("Ammuit ulos kentästä");
-                            });
-                        }
+                if(player.getPlayerYCoordinate() != 0) {
+                    if (!shootMode) {
+                        move('a');
                     } else {
-                        runOnUiThread(() -> {
-                            arrow_message.setText("Ei nuolia jäljellä");
-                        });
+                        shoot(3);
                     }
+                } else if(shootMode) {
+                    runOnUiThread(()-> arrow_message.setText("Ammuit ulos kentästä"));
                 }
                 break;
             }
             case("oikea"): {
-                if(!shootMode) {
-                    if(player.getPlayerXCoordinate() != 4) {
-                        runOnUiThread(() -> {
-                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player_visited);
-                            movePlayer('d');
-                            gameBoard[player.getPlayerYCoordinate()].getChildAt(player.getPlayerXCoordinate()).setBackgroundResource(R.drawable.game_grid_player);
-                            player_location.setText("Olet ruudussa: " + (player.getPlayerXCoordinate()+1) +","+ (player.getPlayerYCoordinate()+1));
-                        });
-                    }
-                } else {
-                    System.out.println("sisällä");
-                    if (player.getPlayerArrows() != 0) {
-                        System.out.println("sisällä nuolet");
-                        shootMode = false;
-                        runOnUiThread(()-> {
-                            btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                        });
-                        player.setPlayerArrows(-1);
-                        if(player.getPlayerXCoordinate() != 4) {
-                            System.out.println("sisällä 2");
-                            if(gm.checkArrowHit(4, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
-                                endGame(5);
-                            } else {
-                                runOnUiThread(()-> {
-                                    arrow_message.setText("Ammuit ohi!");
-                                });
-                            }
-                        } else {
-                            runOnUiThread(()-> {
-                                arrow_message.setText("Ammuit ulos kentästä");
-                            });
-                        }
+                if(player.getPlayerYCoordinate() != 0) {
+                    if (!shootMode) {
+                        move('d');
                     } else {
-                        runOnUiThread(()-> {
-                            arrow_message.setText("Ei nuolia jäljellä");
-                        });
+                        shoot(4);
                     }
+                } else if(shootMode) {
+                    runOnUiThread(()-> arrow_message.setText("Ammuit ulos kentästä"));
                 }
                 break;
             }
@@ -341,12 +256,11 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 moveOrShoot(heardPhrase.getText());
             });
             qiChatbot.addOnEndedListener(endPhrase -> {
-                        Log.i("testi", "qichatbot end reason = " + endPhrase);
-                        chatFuture.requestCancellation();
-                        runOnUiThread(() -> voice_btn.setText("Ääniohjaus"));
-                        voice_btn.setOnClickListener((view) -> startVoiceControl(qiContext));
-                    }
-            );
+                Log.i("testi", "qichatbot end reason = " + endPhrase);
+                chatFuture.requestCancellation();
+                runOnUiThread(() -> voice_btn.setText("Ääniohjaus"));
+                voice_btn.setOnClickListener((view) -> startVoiceControl(qiContext));
+            });
             chatFuture.thenConsume(future -> {
                 if (future.hasError()) {
                     Log.e("Error", "Discussion finished with error.", future.getError());
