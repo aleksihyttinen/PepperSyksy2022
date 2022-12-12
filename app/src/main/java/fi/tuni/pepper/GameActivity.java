@@ -51,7 +51,6 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
     private TextView bats_message;
     private TextView pits_message;
     private TextView arrow_message;
-    HuntTheWumpus htw = new HuntTheWumpus();
     GameManager gm = new GameManager();
     Player player = new Player(gm.generateCoord(), gm.generateCoord());
     Wumpus wumpus = new Wumpus(gm.generateCoord(), gm.generateCoord());

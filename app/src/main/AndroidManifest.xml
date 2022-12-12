@@ -14,11 +14,14 @@
         android:theme="@style/Theme.Pepper"
         tools:replace="android:label">
         <activity
+            android:name=".GuideActivity"
+            android:exported="false" />
+        <activity
             android:name=".GameActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".DiscussionActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
