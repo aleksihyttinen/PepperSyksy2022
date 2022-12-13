@@ -1,17 +1,18 @@
 topic: ~discussion()
 # Defining extra concepts out of words or group of words
 concept:(tampere) ["Mitä tiedät Tampereesta?" "Kerro minulle Tampereesta"]
-concept:(asukasluku) "Tampereella asuu noin 245 000 ihmistä"
-concept:(nähtävyydet) "Tampereen nähtävyyksiä on esimerkiksi Näsinneula, Messukylän vanha kirkko ja Pyynikin näkötorni"
-concept:(pinta-ala) "Tampereen pinta-ala on 689 neliökilometriä"
+concept:(pepper) ["Kerro itsestäsi"]
 # Replying to speech
-u: ("Mitä Pepperin kanssa voi tehdä?") "Minun kanssani voit keskustella tai pelata Wumpus-peliä"
-    u1: (Mikä on Wumpus?) Wumpus pelissä liikutat hahmoa ja koitat välttää Wumpukseen törmäämistä
+u: (~pepper) "Hei, olen Pepper-robotti. Olen SoftBank-roboticsin kehittämä puolihumanoidi robotti. Pystyn esimerkiksi liikkumaan, keskustelemaan ja lukemaan tunteita kasvoista"
+    u1: ("Mitä kanssasi voi tehdä?") "Tässä sovelluksessa voit keskustella kanssani tai pelata Wumpus-peliä"
+        u2: (Mikä on Wumpus *) "Wumpus pelissä liikutat hahmoa ja koitat välttää Wumpukseen törmäämistä"
 u: (~tampere) "Mitä haluaisit tietää?"
-    u1: (* Tampereen pinta ala?) ~pinta-ala
-    u1: (* Tampereen asukasluku?) ~asukasluku
-    u1: ("Kerro minulle Tampereen nähtävyyksistä") ~nähtävyydet
-    u1: ("Mitä Tampereella voi tehdä?") "Tampereella on paljon erilaista tekemistä, voit käyä esimerkiksi katsomassa suosittuja nähtävyyksiä, tai harrastaa lempi urheilulajiasi"
-u: ("Millainen sää on tänään?") "Tämä toiminto ei ole vielä valmis"
-u: (liiku) "liikun"
+    u1: ("Mikä on Tampereen pinta ala?") "Tampereen pinta-ala on 689 neliökilometriä"
+    u1: ("Mikä on Tampereen asukasluku?") "Tampereella asuu noin 245 000 ihmistä"
+    u1: ("Mitä Tampereella voi tehdä?") "Tampereella on paljon erilaista tekemistä, voit käyä esimerkiksi katsomassa suosittuja nähtävyyksiä, harrastaa lempi urheilulajiasi, tai tutustua paikalliseen kulttuuriin jääkiekon tai museoiden parissa"
+        u2: ("Mitä museoita Tampereella on?") "Tampereella on muun muassa Amurin museokortteli, Vapriikin museokeskus sekä Lenin-museo."
+        u2: ("Kerro minulle Tampereen nähtävyyksistä") "Tampereen nähtävyyksiä on esimerkiksi Näsinneula, Messukylän vanha kirkko ja Pyynikin näkötorni"
+        u2: ("Mitä jääkiekkojoukkueita Tampereella on?") "Tampereella on kaksi S M liiga joukkuetta, jotka ovat Tappara ja Ilves. Tapparan ja Ilveksen kotiareena on uusi Nokia Arena"
+    u1: ("Onko Tampereella paikallisruokia?") "Kuuluisa paikallisruoka Tampereella on mustamakkara"
+    u1: ("Onko Tampereella lentokenttä?") Lähin lentoasema sijaitsee Pirkkalassa johon pääsee Tampereelta kätevästi esimerkiksi lähiliikenteen bussilla.
 u:(lopeta keskustelu) lopetan kuuntelun ^endDiscuss("Keskustelu lopetettu")

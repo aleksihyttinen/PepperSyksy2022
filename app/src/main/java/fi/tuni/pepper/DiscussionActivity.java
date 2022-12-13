@@ -43,7 +43,11 @@ import com.aldebaran.qi.sdk.object.locale.Region;
 public class DiscussionActivity extends RobotActivity implements RobotLifecycleCallbacks {
     private View background;
     private Chat chat;
-    private TextView text;
+    private TextView hint1;
+    private TextView hint2;
+    private TextView hint3;
+    private TextView hint4;
+    private TextView hint5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +55,11 @@ public class DiscussionActivity extends RobotActivity implements RobotLifecycleC
         Log.i("create", "created");
         QiSDK.register(this, this);
         background = findViewById(R.id.background);
-        text = findViewById(R.id.text);
+        hint1 = findViewById(R.id.hint1);
+        hint2 = findViewById(R.id.hint2);
+        hint3 = findViewById(R.id.hint3);
+        hint4 = findViewById(R.id.hint4);
+        hint5 = findViewById(R.id.hint5);
         Button menu = findViewById(R.id.menu);
         menu.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), MainActivity.class);
@@ -69,14 +77,64 @@ public class DiscussionActivity extends RobotActivity implements RobotLifecycleC
         say.run();
         Topic topic = TopicBuilder.with(qiContext).withResource(R.raw.discussion).build();
         QiChatbot qiChatbot = QiChatbotBuilder.with(qiContext).withTopic(topic).build();
-
         Locale locale = new Locale(Language.FINNISH, Region.FINLAND);
         chat = ChatBuilder.with(qiContext).withChatbot(qiChatbot).withLocale(locale).build();
         chat.addOnStartedListener(() -> Log.i("testi", "chatti aloitettu"));
         chat.setListeningBodyLanguage(BodyLanguageOption.DISABLED);
         Future<Void> chatFuture = chat.async().run();
         chat.addOnHeardListener(heardPhrase -> {
-            runOnUiThread(() -> text.setText(heardPhrase.getText()));
+            switch (heardPhrase.getText()) {
+                case("Kerro minulle Tampereesta"): {
+                    runOnUiThread(()-> {
+                        hint1.setText("Mikä on Tampereen pinta ala?");
+                        hint2.setText("Mikä on Tampereen asukasluku?");
+                        hint3.setText("Mitä Tampereella voi tehdä?");
+                        hint4.setText("Onko Tampereella paikallisruokia?");
+                        hint5.setText("Onko Tampereella lentokenttä?");
+                    });
+                    break;
+                }
+                case("Mitä Tampereella voi tehdä"): {
+                    runOnUiThread(()-> {
+                        hint1.setText("Mitä museoita Tampereella on?");
+                        hint2.setText("Kerro minulle Tampereen nähtävyyksistä");
+                        hint3.setText("Mitä jääkiekkojoukkueita Tampereella on?");
+                        hint4.setText("");
+                        hint5.setText("");
+                    });
+                    break;
+                }
+                case("Kerro itsestäsi"): {
+                    runOnUiThread(()->{
+                        hint1.setText("Mitä kanssasi voi tehdä?");
+                        hint2.setText("");
+                        hint3.setText("");
+                        hint4.setText("");
+                        hint5.setText("");
+                    });
+                    break;
+                }
+                case("Mitä kanssasi voi tehdä"): {
+                    runOnUiThread(()->{
+                        hint1.setText("Mikä on Wumpus-peli?");
+                        hint2.setText("");
+                        hint3.setText("");
+                        hint4.setText("");
+                        hint5.setText("");
+                    });
+                    break;
+                }
+                default: {
+                    runOnUiThread(()->{
+                        hint1.setText("Kerro minulle Tampereesta");
+                        hint2.setText("Kerro itsestäsi");
+                        hint3.setText("");
+                        hint4.setText("");
+                        hint5.setText("");
+                    });
+                    break;
+                }
+            }
         });
         qiChatbot.addOnEndedListener(endPhrase ->{
                     Log.i("testi", "qichatbot end reason = " + endPhrase);

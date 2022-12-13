@@ -3,7 +3,6 @@
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/design_default_color_error"
     android:orientation="vertical">
 
     <Button
@@ -13,14 +12,52 @@
         android:text="Takaisin valikkoon"
         android:textColor="@color/black" />
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100dp"
-        android:text="Hello World!"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Esimerkkiaiheita:"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+        <TextView
+            android:layout_marginTop="20dp"
+            android:textSize="32sp"
+            android:id="@+id/hint1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kerro minulle Tampereesta"/>
+        <TextView
+            android:textSize="32sp"
+            android:id="@+id/hint2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kerro itsestäsi"/>
+        <TextView
+            android:textSize="32sp"
+            android:id="@+id/hint3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""/>
+        <TextView
+            android:textSize="32sp"
+            android:id="@+id/hint4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""/>
+        <TextView
+            android:textSize="32sp"
+            android:id="@+id/hint5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""/>
 
-        />
+    </LinearLayout>
 
 </LinearLayout>
