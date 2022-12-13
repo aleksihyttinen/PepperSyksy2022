@@ -82,7 +82,7 @@ public class Wumpus {
         //Check if new spot values are within map limits
         if((checkSpotY < gameMap.length && checkSpotY >= 0) && (checkSpotX < gameMap[0].length && checkSpotX >= 0)) {
             //Check if spot has no pit or bat
-            if(gameMap[checkSpotY][checkSpotX] != "[U]" || gameMap[checkSpotY][checkSpotX] != "[B]") {
+            if(gameMap[checkSpotY][checkSpotX] != "[U]" && gameMap[checkSpotY][checkSpotX] != "[B]") {
                 //System.out.println("Spot can be reached: " + checkSpotY + ":" + checkSpotX);
                 letWumpusMove = true;
             }

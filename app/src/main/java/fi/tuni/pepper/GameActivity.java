@@ -51,10 +51,14 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
     private TextView bats_message;
     private TextView pits_message;
     private TextView arrow_message;
+    private View btn_left;
+    private View btn_right;
+    private View btn_up;
+    private View btn_down;
+    private View btn_shoot;
     GameManager gm = new GameManager();
     Player player = new Player(gm.generateCoord(), gm.generateCoord());
     Wumpus wumpus = new Wumpus(gm.generateCoord(), gm.generateCoord());
-    private View btn_shoot;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,13 +80,13 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             Intent intent = new Intent(view.getContext(), GuideActivity.class);
             view.getContext().startActivity(intent);
         });
-        View btn_left = findViewById(R.id.btn_left);
+        btn_left = findViewById(R.id.btn_left);
         btn_left.setOnClickListener((view) -> moveOrShoot("vasen"));
-        View btn_up = findViewById(R.id.btn_up);
+        btn_up = findViewById(R.id.btn_up);
         btn_up.setOnClickListener((view) -> moveOrShoot("ylös"));
-        View btn_down = findViewById(R.id.btn_down);
+        btn_down = findViewById(R.id.btn_down);
         btn_down.setOnClickListener((view) -> moveOrShoot("alas"));
-        View btn_right = findViewById(R.id.btn_right);
+        btn_right = findViewById(R.id.btn_right);
         btn_right.setOnClickListener((view) -> moveOrShoot("oikea"));
         btn_shoot = findViewById(R.id.btn_shoot);
         btn_shoot.setOnClickListener((view) -> {
@@ -164,9 +168,14 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                 if (gm.checkArrowHit(dir, wumpus, player.getPlayerYCoordinate(), player.getPlayerXCoordinate())) {
                     endGame(5);
                 } else {
+                    if(gm.checkCollisionEvent(player.getPlayerYCoordinate(), player.getPlayerXCoordinate()) == 1) {
+                        endGame(6);
+                    }
                     arrow_message.setText("Ammuit ohi!");
                 }
             } else {
+                shootMode = false;
+                btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
                 arrow_message.setText("Ei nuolia jäljellä");
             }
         });
@@ -183,43 +192,59 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                         shoot(1);
                     }
                 } else if(shootMode) {
-                    runOnUiThread(()-> arrow_message.setText("Ammuit ulos kentästä"));
+                    shootMode = false;
+                    runOnUiThread(()-> {
+                        arrow_message.setText("Yritit ampua ulos kentästä");
+                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                    });
                 }
                 break;
             }
             case("alas"): {
-                if(player.getPlayerYCoordinate() != 0) {
+                if(player.getPlayerYCoordinate() != 4) {
                     if (!shootMode) {
                         move('s');
                     } else {
                         shoot(2);
                     }
                 } else if(shootMode) {
-                    runOnUiThread(()-> arrow_message.setText("Ammuit ulos kentästä"));
+                    shootMode = false;
+                    runOnUiThread(()-> {
+                        arrow_message.setText("Yritit ampua ulos kentästä");
+                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                    });
                 }
                 break;
             }
             case("vasen"): {
-                if(player.getPlayerYCoordinate() != 0) {
+                if(player.getPlayerXCoordinate() != 0) {
                     if (!shootMode) {
                         move('a');
                     } else {
                         shoot(3);
                     }
                 } else if(shootMode) {
-                    runOnUiThread(()-> arrow_message.setText("Ammuit ulos kentästä"));
+                    shootMode = false;
+                    runOnUiThread(()-> {
+                        arrow_message.setText("Yritit ampua ulos kentästä");
+                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                    });
                 }
                 break;
             }
             case("oikea"): {
-                if(player.getPlayerYCoordinate() != 0) {
+                if(player.getPlayerXCoordinate() != 4) {
                     if (!shootMode) {
                         move('d');
                     } else {
                         shoot(4);
                     }
                 } else if(shootMode) {
-                    runOnUiThread(()-> arrow_message.setText("Ammuit ulos kentästä"));
+                    shootMode = false;
+                    runOnUiThread(()-> {
+                        arrow_message.setText("Yritit ampua ulos kentästä");
+                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                    });
                 }
                 break;
             }
@@ -239,9 +264,24 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             }
         }
     }
+    private void enableButtons(Boolean enable) {
+        runOnUiThread(() -> {
+            btn_shoot.setEnabled(enable);
+            btn_left.setEnabled(enable);
+            btn_right.setEnabled(enable);
+            btn_up.setEnabled(enable);
+            btn_down.setEnabled(enable);
+        });
+    }
+    private void cancelChat(QiContext qiContext, Future<Void> chatFuture) {
+        chatFuture.requestCancellation();
+        runOnUiThread(() -> voice_btn.setText("Ääniohjaus"));
+        enableButtons(true);
+        voice_btn.setOnClickListener((view) -> startVoiceControl(qiContext));
+    }
     private void startVoiceControl(QiContext qiContext) {
         runOnUiThread(()-> voice_btn.setText("Lopeta ääniohjaus"));
-
+        enableButtons(false);
         new Thread(() -> {
             Log.i("testi", "jee");
             Topic topic = TopicBuilder.with(qiContext).withResource(R.raw.moves).build();
@@ -254,9 +294,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             qiChatbot.setSpeakingBodyLanguage(BodyLanguageOption.DISABLED);
             Future<Void> chatFuture = chat.async().run();
             voice_btn.setOnClickListener((view) -> {
-                chatFuture.requestCancellation();
-                runOnUiThread(() -> voice_btn.setText("Ääniohjaus"));
-                voice_btn.setOnClickListener((view1) -> startVoiceControl(qiContext));
+                cancelChat(qiContext, chatFuture);
             });
             chat.addOnHeardListener(heardPhrase -> {
                 Log.i("käsky", heardPhrase.toString());
@@ -264,9 +302,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             });
             qiChatbot.addOnEndedListener(endPhrase -> {
                 Log.i("testi", "qichatbot end reason = " + endPhrase);
-                chatFuture.requestCancellation();
-                runOnUiThread(() -> voice_btn.setText("Ääniohjaus"));
-                voice_btn.setOnClickListener((view) -> startVoiceControl(qiContext));
+                cancelChat(qiContext, chatFuture);
             });
             chatFuture.thenConsume(future -> {
                 if (future.hasError()) {
@@ -299,7 +335,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         System.out.println("hävisit");
         runOnUiThread(() -> {
             new AlertDialog.Builder(this)
-                    .setMessage(endReason == 5 ? "Voitit pelin!": endReason == 1 ? "Törmäsit Wumpukseen, hävisit pelin" : endReason == 2 ? "Tipuit kuoppaan, hävisit pelin" : "Hävisit pelin")
+                    .setMessage(endReason == 5 ? "Voitit pelin!": endReason == 6 ? "Wumpus siirtyi päällesi, hävisit pelin": endReason == 1 ? "Törmäsit Wumpukseen, hävisit pelin" : endReason == 2 ? "Tipuit kuoppaan, hävisit pelin" : "Hävisit pelin")
                     .setNegativeButton("Palaa päävalikkoon", (arg0, arg1) -> menu.performClick())
                     .setPositiveButton("Pelaa uudelleen", (arg0, arg1) -> {
                         gameOn = true;
@@ -308,6 +344,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                         gm.gameMap = gm.generateMap(player.getPlayerYCoordinate(), player.getPlayerXCoordinate(), wumpus);
                         HashSet<String> dangers = gm.parsePlayerVicinity(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
                         updateDangerMessages(dangers);
+                        player.setPlayerStartArrows(3);
                         for (LinearLayout row : gameBoard) {
                             for (int j = 0; j < row.getChildCount(); j++) {
                                 row.getChildAt(j).setBackgroundResource(R.drawable.game_grid_border);

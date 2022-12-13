@@ -71,6 +71,7 @@ public class Player{
 
     public void setPlayerYCoordinate(int input) {
         //System.out.println("Y is: " + input);
+        //System.out.println("Y is: " + input);
 
         //Allow movement up
         if((playerY > 0) && (input == -1)) {
@@ -93,6 +94,9 @@ public class Player{
             arrowAmount = arrowAmount + pArrow;
         }
 
+    }
+    public void setPlayerStartArrows(int arrows) {
+        arrowAmount = arrows;
     }
 
     public int getPlayerArrows() {
