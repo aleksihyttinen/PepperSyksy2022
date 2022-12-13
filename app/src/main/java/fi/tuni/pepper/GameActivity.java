@@ -39,8 +39,9 @@ import fi.tuni.pepper.gamelogic.Wumpus;
 
 
 public class GameActivity extends RobotActivity implements RobotLifecycleCallbacks {
-    public static View menu;
-    public static boolean gameOn = true;
+    private Boolean say_hello = true;
+    private View menu;
+    private boolean gameOn = true;
     private Chat chat;
     private LinearLayout[] gameBoard;
     private Button voice_btn;
@@ -59,6 +60,10 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         QiSDK.register(this, this);
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            say_hello = extras == null;
+        }
         Log.i("create", "created");
         menu = findViewById(R.id.menu);
         menu.setOnClickListener(view -> {
@@ -112,11 +117,13 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
     @Override
     public void onRobotFocusGained(QiContext qiContext) {
         Log.i("focus", "focus gained");
-        Say say = SayBuilder.with(qiContext)
-                .withText("Tervetuloa pelaamaan Wumpus-peliä")
-                .withBodyLanguageOption(BodyLanguageOption.DISABLED)
-                .build();
-        say.run();
+        if(say_hello) {
+            Say say = SayBuilder.with(qiContext)
+                    .withText("Tervetuloa pelaamaan Wumpus-peliä")
+                    .withBodyLanguageOption(BodyLanguageOption.DISABLED)
+                    .build();
+            say.run();
+        }
         voice_btn.setOnClickListener((view) -> startVoiceControl(qiContext));
 
     }
