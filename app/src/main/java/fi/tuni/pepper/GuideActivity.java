@@ -30,6 +30,7 @@ public class GuideActivity extends RobotActivity implements RobotLifecycleCallba
         read_btn = findViewById(R.id.read);
         back.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), GameActivity.class);
+            intent.putExtra("fromOtherActivity", true);
             view.getContext().startActivity(intent);
         });
         LinearLayout guide_texts = findViewById(R.id.guide_texts);
