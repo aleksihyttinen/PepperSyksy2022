@@ -89,7 +89,7 @@ public class Player{
     //Can be +/- new arrows
     public void setPlayerArrows(int pArrow) {
 
-        if(arrowAmount > 0) {
+        if(arrowAmount > 0 || (arrowAmount == 0 && pArrow > 0)) {
             arrowAmount = arrowAmount + pArrow;
         }
 

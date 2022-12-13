@@ -48,42 +48,58 @@ public class Wumpus {
     }
 
     //Moves wumpus one spot/line up/down or right/left
-    public void moveWumpus() {
+    public void moveWumpus(String[][] gameMap) {
         int wumpusMovement = 0;
 
         //Decide movement direction -1/1
         int wumpusStep = (int) ((Math.random() * 2));
 
-        if(wumpusStep > 0.5) {
+        if(wumpusStep < 1) {
             wumpusMovement = 1;
         } else {
             wumpusMovement = -1;
         }
-        /*
-        switch(wumpusStep) {
-            case 0:
-                wumpusMovement = -1;
-            case 1:
-                wumpusMovement = 1;
-        }
-        */
 
         //Decide movement horizontal or vertical
         //0 or 1, switch case
         int moveDir = (int) ((Math.random() * 2));
+        int checkSpotY = getWumpusYCoordinate();
+        int checkSpotX = getWumpusXCoordinate();
 
-        System.out.println("Wumpus moves dir: " + wumpusMovement);
-        System.out.println("Wumpus moves: " + moveDir);
+        //System.out.println("Wumpus moves dir: " + wumpusMovement);
+        //System.out.println("Wumpus moves: " + moveDir);
 
-        switch(moveDir) {
-            case 0:
-                System.out.println("Wumpus case 0");
-                setWumpusXCoordinate(wumpusMovement);
-                break;
-            case 1:
-                System.out.println("Wumpus case 1");
-                setWumpusYCoordinate(wumpusMovement);
-                break;
+        //Choose X or Y change before validation check
+        if(moveDir < 1) {
+            checkSpotX = checkSpotX + wumpusMovement;
+        } else {
+            checkSpotY = checkSpotY + wumpusMovement;
+        }
+
+        //Parse through game map and check if the direction has no hazards
+        boolean letWumpusMove = false;
+
+        //Check if new spot values are within map limits
+        if((checkSpotY < gameMap.length && checkSpotY >= 0) && (checkSpotX < gameMap[0].length && checkSpotX >= 0)) {
+            //Check if spot has no pit or bat
+            if(gameMap[checkSpotY][checkSpotX] != "[U]" || gameMap[checkSpotY][checkSpotX] != "[B]") {
+                //System.out.println("Spot can be reached: " + checkSpotY + ":" + checkSpotX);
+                letWumpusMove = true;
+            }
+        }
+
+        if(letWumpusMove) {
+            //Put this after validation check
+            switch(moveDir) {
+                case 0:
+                    //System.out.println("Wumpus case 0");
+                    setWumpusXCoordinate(wumpusMovement);
+                    break;
+                case 1:
+                    //System.out.println("Wumpus case 1");
+                    setWumpusYCoordinate(wumpusMovement);
+                    break;
+            }
         }
 
     }

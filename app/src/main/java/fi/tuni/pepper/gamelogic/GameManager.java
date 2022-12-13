@@ -70,11 +70,12 @@ public class GameManager{
 
         //Generate hazards for all the rest free spots
         //Place pits for the map
-        for(int k = 0; k < pitAmount; k++) {
-
+        int k = 0;
+        while(k < pitAmount) {
+            System.out.println("Setting pits on map");
             //Coords
-            int pitY = (int) ((Math.random() * (maxCoord - minCoord + 1)) + minCoord);
-            int pitX = (int) ((Math.random() * (maxCoord - minCoord + 1)) + minCoord);
+            int pitY = generateCoord();
+            int pitX = generateCoord();
 
             for(int i=0; i <= maxCoord; i++ ) {
                 for(int j=0; j <= maxCoord; j++) {
@@ -82,7 +83,14 @@ public class GameManager{
                     if(gameMap[i][j] == emptyMark) {
                         //Place if coordinates for empty spot match
                         if(i == pitY && j == pitX) {
-                            gameMap[i][j] = pitMark;
+                            //Only set restriction for ONE pit placement
+                            if(checkHazardLimits(pitY, pitX) && k == 0) {
+                                gameMap[i][j] = pitMark;
+                                k++;
+                            } else if(k < pitAmount) {
+                                gameMap[i][j] = pitMark;
+                                k++;
+                            }
                         }
                     }
                 }
@@ -104,13 +112,16 @@ public class GameManager{
                     if(gameMap[i][j] == emptyMark) {
                         //Place if coordinates for empty spot match
                         if(i == batY && j == batX) {
-                            gameMap[i][j] = batMark;
-                            batsPlaced = true;
+                            if(checkHazardLimits(batY, batX)) {
+                                gameMap[i][j] = batMark;
+                                batsPlaced = true;
+                            }
                         }
                     }
                 }
             }
         }
+
         //Place arrows
         //Place arrow (might be spawned if free spot)
         //Coords
@@ -133,6 +144,27 @@ public class GameManager{
         return gameMap;
     }
 
+    //Check if the hazard is too close to Wumpus or Player, return false if cannot place hazard
+    public boolean checkHazardLimits(int hazardY, int hazardX) {
+        for(int y = -1; y < 2; y++) {
+            for(int x = -1; x < 2; x++) {
+                if(!(x == 0 && y == 0)) {
+                    int vicinityY = hazardY + y;
+                    int vicinityX = hazardX + x;
+                    //Check if the spot x,y are within the max/min values
+                    if((vicinityY >= minCoord && vicinityY <= maxCoord) && (vicinityX >= minCoord && vicinityX <= maxCoord)) {
+                        if(gameMap[vicinityY][vicinityX] == playerMark || gameMap[vicinityY][vicinityX] == wumpusMark) {
+                            return false;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return true;
+    }
+
     //Generates int between 0-4 as coordinate
     public int generateCoord() {
         return (int) ((Math.random() * (maxCoord - minCoord + 1)) + minCoord);
@@ -144,35 +176,37 @@ public class GameManager{
         //Check wumpus position
         System.out.println("Wumpus at: " + wumpus.getWumpusYCoordinate()+  ":" + wumpus.getWumpusXCoordinate());
 
-        //These will be the wumput spot coords
-        //int shotY = wumpus.getWumpusYCoordinate();
-        //int shotX = wumpus.getWumpusXCoordinate();
+        //Use new values for arrow movement, use player coords only for update
+        int arrowY = playerY;
+        int arrowX = playerX;
 
-        //Decide target adjustments via arrowDir value
+        ///Decide target adjustments via arrowDir value
         switch(arrowDir){
             case 1:
-                playerY--;
+                arrowY--;
                 break;
             case 2:
-                playerY++;
+                arrowY++;
                 break;
             case 3:
-                playerX--;
+                arrowX--;
                 break;
             case 4:
-                playerX++;
+                arrowX++;
                 break;
         }
 
-        System.out.println("Arrow flying into: " + playerY + ":" + playerX);
+        System.out.println("Arrow flying into: " + arrowY + ":" + arrowX);
 
         //Check if game map spot has wumpus in it
-        boolean shotHit = gameMap[playerY][playerX] == wumpusMark;
-        System.out.println(shotHit);
+        boolean shotHit = gameMap[arrowY][arrowX] == wumpusMark;
+        //System.out.println(shotHit);
 
         //Move wumpus if arrow did not hit
         if(!shotHit) {
-            wumpus.moveWumpus();
+            wumpus.moveWumpus(gameMap);
+            //Update map immediatelly after wumpus moves
+            updateMap(playerX, playerY, wumpus.getWumpusXCoordinate(), wumpus.getWumpusYCoordinate());
         }
 
         return shotHit;
