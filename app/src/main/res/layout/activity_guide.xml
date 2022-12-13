@@ -43,7 +43,7 @@
             android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wumpus-pelin tavoitteena on löytää Wumpus ja osua siihen nuolella."/>
+            android:text="Wumpus-pelin tavoitteena on löytää Wumpus ja osua siihen nuolella.\nJos ammut ohi, Wumpus saattaa siirtyä."/>
         <TextView
             android:textSize="20sp"
             android:layout_width="wrap_content"
@@ -53,7 +53,7 @@
             android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Peli kertoo sinulle vihjeitä ympärilläsi sijatsevista vaaroista ja Wumpuksesta."/>
+            android:text="Peli kertoo sinulle vihjeitä ympärilläsi sijaitsevista vaaroista ja Wumpuksesta."/>
         <TextView
             android:textSize="20sp"
             android:layout_width="wrap_content"
@@ -75,12 +75,12 @@
             android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wumpus: Haistat Wumpuksen"/>
+            android:text="Wumpus: Haistat Wumpuksen,"/>
         <TextView
             android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lepakot: Kuulet siipien lepatusta"/>
+            android:text="Lepakot: Kuulet siipien lepatusta,"/>
         <TextView
             android:textSize="20sp"
             android:layout_width="wrap_content"

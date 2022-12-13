@@ -54,8 +54,8 @@ public class GuideActivity extends RobotActivity implements RobotLifecycleCallba
                     .withBodyLanguageOption(BodyLanguageOption.DISABLED)
                     .build();
             say.async().run();
+            runOnUiThread(()->read_btn.setEnabled(true));
         }).start());
-        runOnUiThread(()->read_btn.setEnabled(true));
 
     }
 
