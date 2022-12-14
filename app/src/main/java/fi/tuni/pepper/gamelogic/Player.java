@@ -22,30 +22,20 @@ public class Player{
     public final char playerLeft = 'a';
     public final char playerRight = 'd';
 
-    int playerMove = 1;
-    int playerShoot = 2;
-    int playerToMenu = 3;
-
-    public boolean isAlive = true;
-
     //Set player's coordinate by one step to certain direction
     public void movePlayer(char dir) {
         //Take direction, make limit assesment
         switch(dir) {
             case playerUp:
-                //System.out.println("Move up");
                 setPlayerYCoordinate(-1);
                 break;
             case playerDown:
-                //System.out.println("Move down");
                 setPlayerYCoordinate(1);
                 break;
             case playerLeft:
-                //System.out.println("Move left");
                 setPlayerXCoordinate(-1);
                 break;
             case playerRight:
-                //System.out.println("Move right");
                 setPlayerXCoordinate(1);
                 break;
         }
@@ -70,9 +60,6 @@ public class Player{
     }
 
     public void setPlayerYCoordinate(int input) {
-        //System.out.println("Y is: " + input);
-        //System.out.println("Y is: " + input);
-
         //Allow movement up
         if((playerY > 0) && (input == -1)) {
             playerY = playerY + input;
@@ -80,7 +67,6 @@ public class Player{
         } else if((playerY < 4) && (input == 1)) {
             playerY = playerY + input;
         }
-
     }
 
     public int getPlayerYCoordinate() {

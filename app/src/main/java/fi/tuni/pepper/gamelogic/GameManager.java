@@ -35,108 +35,74 @@ public class GameManager{
         }
 
         //Place Player first
-        for(int i=0; i <= maxCoord; i++ ) {
-            for(int j=0; j <= maxCoord; j++) {
-                gameMap[playerY][playerX] = playerMark;
-            }
-        }
+        gameMap[playerY][playerX] = playerMark;
 
         //Place Wumpus at free spot
-        //Make sure the spot is free
         boolean wumpusPlaced = false;
         while(!wumpusPlaced){
             System.out.println("Wumpus at: " + wumpus.getWumpusYCoordinate() + ":" + wumpus.getWumpusXCoordinate());
 
-            for(int i=0; i <= maxCoord; i++ ) {
-                for(int j=0; j <= maxCoord; j++) {
-                    //Consider only if spot is empty
-                    if(gameMap[i][j] == emptyMark) {
-                        //Place if coordinates for empty spot match
-                        if(i == wumpus.getWumpusYCoordinate() && j == wumpus.getWumpusXCoordinate()) {
-                            gameMap[i][j] = wumpusMark;
-                            wumpusPlaced = true;
-                        }
-                    }
-                }
+            if(gameMap[wumpus.getWumpusYCoordinate()][wumpus.getWumpusXCoordinate()] == emptyMark) {
+                gameMap[wumpus.getWumpusYCoordinate()][wumpus.getWumpusXCoordinate()] = wumpusMark;
+                wumpusPlaced = true;
             }
 
-            //IF no spot, generate new coords for wumpus
+            //IF not placed, generate new coordinates for wumpus
             if(!wumpusPlaced){
                 wumpus.setWumpusStartPosition(generateCoord(), generateCoord());
             }
-
         }
 
 
         //Generate hazards for all the rest free spots
         //Place pits for the map
         int k = 0;
-        while(k < pitAmount) {
-            System.out.println("Setting pits on map");
-            //Coords
-            int pitY = generateCoord();
-            int pitX = generateCoord();
+        int pitY = 0;
+        int pitX = 0;
 
-            for(int i=0; i <= maxCoord; i++ ) {
-                for(int j=0; j <= maxCoord; j++) {
-                    //Check if spot is empty
-                    if(gameMap[i][j] == emptyMark) {
-                        //Place if coordinates for empty spot match
-                        if(i == pitY && j == pitX) {
-                            //Only set restriction for ONE pit placement
-                            if(checkHazardLimits(pitY, pitX) && k == 0) {
-                                gameMap[i][j] = pitMark;
-                                k++;
-                            } else if(k < pitAmount) {
-                                gameMap[i][j] = pitMark;
-                                k++;
-                            }
-                        }
-                    }
-                }
+        while(k < pitAmount) {
+            pitY = generateCoord();
+            pitX = generateCoord();
+            //Only set restriction for ONE pit placement
+            if(gameMap[pitY][pitX] == emptyMark && (checkHazardLimits(pitY, pitX) && k == 0)) {
+                gameMap[pitY][pitX] = pitMark;
+                k++;
+            } else if (gameMap[pitY][pitX] == emptyMark && k < pitAmount) {
+                gameMap[pitY][pitX] = pitMark;
+                k++;
             }
         }
 
-        //Place bats spot
         //Place bat spot to a free location
         boolean batsPlaced = false;
         int batY = 0;
         int batX = 0;
 
         while(!batsPlaced) {
+
             batY = generateCoord();
             batX = generateCoord();
-            for(int i=0; i <= maxCoord; i++ ) {
-                for(int j=0; j <= maxCoord; j++) {
-                    //Consider only if spot is empty
-                    if(gameMap[i][j] == emptyMark) {
-                        //Place if coordinates for empty spot match
-                        if(i == batY && j == batX) {
-                            if(checkHazardLimits(batY, batX)) {
-                                gameMap[i][j] = batMark;
-                                batsPlaced = true;
-                            }
-                        }
-                    }
-                }
+
+            if(gameMap[batY][batX] == emptyMark && checkHazardLimits(batY, batX)) {
+                gameMap[batY][batX] = batMark;
+                batsPlaced = true;
             }
+
         }
 
-        //Place arrows
-        //Place arrow (might be spawned if free spot)
-        //Coords
-        int arrowY = generateCoord();
-        int arrowX = generateCoord();
+        //Place arrow
+        int arrowY = 0;
+        int arrowX = 0;
+        boolean arrowPlaced = false;
 
-        for(int i=0; i <= maxCoord; i++ ) {
-            for(int j=0; j <= maxCoord; j++) {
-                //Check if spot is empty
-                if(gameMap[i][j] == emptyMark) {
-                    //Place if coordinates for empty spot match
-                    if(i == arrowY && j == arrowX) {
-                        gameMap[i][j] = arrowMark;
-                    }
-                }
+        while(!arrowPlaced) {
+
+            arrowY = generateCoord();
+            arrowX = generateCoord();
+
+            if(gameMap[arrowY][arrowX] == emptyMark) {
+                gameMap[arrowY][arrowX] = arrowMark;
+                arrowPlaced = true;
             }
         }
 
@@ -200,7 +166,6 @@ public class GameManager{
 
         //Check if game map spot has wumpus in it
         boolean shotHit = gameMap[arrowY][arrowX] == wumpusMark;
-        //System.out.println(shotHit);
 
         //Move wumpus if arrow did not hit
         if(!shotHit) {
@@ -236,18 +201,10 @@ public class GameManager{
         }
 
         //Place Player
-        for(int i=0; i <= maxCoord; i++ ) {
-            for(int j=0; j <= maxCoord; j++) {
-                gameMap[playerY][playerX] = playerMark;
-            }
-        }
+        gameMap[playerY][playerX] = playerMark;
 
         //Place Wumpus
-        for(int i=0; i <= maxCoord; i++ ) {
-            for(int j=0; j <= maxCoord; j++) {
-                gameMap[wumpY][wumpX] = wumpusMark;
-            }
-        }
+        gameMap[wumpY][wumpX] = wumpusMark;
 
     }
 
@@ -261,25 +218,18 @@ public class GameManager{
 
         //Parse the map based from player's x and y
         for(int y = -1; y < 2; y++) {
-            //System.out.println("Inside Y parse");
             for(int x = -1; x < 2; x++) {
-                //System.out.println("Inside X parse");
                 //No need to check player's spot 0:0 at all
                 if(!(x == 0 && y == 0)) {
                     int vicY = playerY + y;
                     int vicX = playerX + x;
-                    //System.out.println("Parse at: " + vicY +":" + vicX);
                     //Check if the spot x,y are within the max/min values
                     if((vicY >= minCoord && vicY <= maxCoord) && (vicX >= minCoord && vicX <= maxCoord)) {
-                        //System.out.println("Inside parse");
                         if(gameMap[vicY][vicX] == pitMark || gameMap[vicY][vicX] == wumpusMark || gameMap[vicY][vicX] == batMark) {
-                            //System.out.println(gameMap[vicY][vicX]);
                             hazardSet.add(gameMap[vicY][vicX]);
                         }
                     }
-
                 }
-
             }
         }
 
@@ -325,20 +275,8 @@ public class GameManager{
 
     //Check after Player has moved if there is anything else on the spot
     public int checkCollisionEvent(int playerY, int playerX) {
-        //Parse game map and check any markings
-        String collisionSpot = "[ ]";
 
-        for(int i=0; i <= maxCoord; i++ ) {
-            for(int j=0; j <= maxCoord; j++) {
-                //Check the player's new position
-                if(i == playerY && j == playerX) {
-                    collisionSpot = gameMap[i][j];
-                }
-            }
-        }
-
-        //Check this first
-        //System.out.println("Collision spot: " + collisionSpot);
+        String collisionSpot = gameMap[playerY][playerX];
 
         switch(collisionSpot) {
             case "[W]":
@@ -364,21 +302,12 @@ public class GameManager{
     public void showInfo(int pY, int pX) {
         System.out.println("You are at " + pY +"," + pX);
 
-
-        //Extra!!! Parse hazard spots and tell them
         for(int i=0; i <= maxCoord; i++ ) {
             for(int j=0; j <= maxCoord; j++) {
-                //Check any hazard spot
-                /*
-                if(!(gameMap[i][j] == playerMark || gameMap[i][j] == emptyMark)) {
-                    System.out.println("Hazard at: " + i + ":" + j);
-                }
-                */
                 //Tell Wumpus spot
                 if(gameMap[i][j] == wumpusMark) {
                     System.out.println("Wumpus at: " + i + ":" + j);
                 }
-
             }
         }
 

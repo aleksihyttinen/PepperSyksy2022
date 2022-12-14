@@ -11,8 +11,6 @@ public class Wumpus {
     }
 
     public void setWumpusXCoordinate(int input) {
-        //wumpusX = wumpusX + input;
-
         //Allow movement to the left
         if((wumpusX > 0) && (input == -1)) {
             wumpusX = wumpusX + input;
@@ -27,8 +25,6 @@ public class Wumpus {
     }
 
     public void setWumpusYCoordinate(int input) {
-        //wumpusY = wumpusY + input;
-
         //Allow movement up
         if((wumpusY > 0) && (input == -1)) {
             wumpusY = wumpusY + input;
@@ -66,9 +62,6 @@ public class Wumpus {
         int checkSpotY = getWumpusYCoordinate();
         int checkSpotX = getWumpusXCoordinate();
 
-        //System.out.println("Wumpus moves dir: " + wumpusMovement);
-        //System.out.println("Wumpus moves: " + moveDir);
-
         //Choose X or Y change before validation check
         if(moveDir < 1) {
             checkSpotX = checkSpotX + wumpusMovement;
@@ -92,11 +85,9 @@ public class Wumpus {
             //Put this after validation check
             switch(moveDir) {
                 case 0:
-                    //System.out.println("Wumpus case 0");
                     setWumpusXCoordinate(wumpusMovement);
                     break;
                 case 1:
-                    //System.out.println("Wumpus case 1");
                     setWumpusYCoordinate(wumpusMovement);
                     break;
             }
