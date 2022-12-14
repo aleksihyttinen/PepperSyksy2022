@@ -13,7 +13,8 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:text="Takaisin peliin"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"/>
         <Button
             android:id="@+id/read"
             android:layout_width="wrap_content"
@@ -64,27 +65,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Aloittaessasi pelin sinulla on vain kolme nuolta, joten käytä ne viisaasti."/>
-        <TextView
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Eri vaarojen vihjeet:"/>
-        <TextView
-            android:textSize="20sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wumpus: Haistat Wumpuksen,"/>
-        <TextView
-            android:textSize="20sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lepakot: Kuulet siipien lepatusta,"/>
-        <TextView
-            android:textSize="20sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Kuoppa: Tunnet kylmän viiman"/>
+                <TextView
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Eri vaarojen vihjeet:"/>
+                <TextView
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wumpus: Haistat Wumpuksen,"/>
+                <TextView
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lepakot: Kuulet siipien lepatusta,"/>
+                <TextView
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kuoppa: Tunnet kylmän viiman,"/>
+                <TextView
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"
+                    android:text="Ääniohjauksen komennot:"/>
+                <TextView
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ylös, alas, vasen, oikea, ammu, liiku, lopeta kuuntelu"/>
     </LinearLayout>
 </LinearLayout>

@@ -15,4 +15,4 @@ u: (~tampere) "Mitä haluaisit tietää?"
         u2: ("Mitä jääkiekkojoukkueita Tampereella on?") "Tampereella on kaksi S M liiga joukkuetta, jotka ovat Tappara ja Ilves. Tapparan ja Ilveksen kotiareena on uusi Nokia Arena"
     u1: ("Onko Tampereella paikallisruokia?") "Kuuluisa paikallisruoka Tampereella on mustamakkara"
     u1: ("Onko Tampereella lentokenttä?") Lähin lentoasema sijaitsee Pirkkalassa johon pääsee Tampereelta kätevästi esimerkiksi lähiliikenteen bussilla.
-u:(lopeta keskustelu) lopetan kuuntelun ^endDiscuss("Keskustelu lopetettu")
+u:(lopeta kuuntelu) lopetan kuuntelun ^endDiscuss("Keskustelu lopetettu")

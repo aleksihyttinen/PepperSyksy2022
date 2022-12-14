@@ -71,6 +71,7 @@ public class DiscussionActivity extends RobotActivity implements RobotLifecycleC
     @SuppressLint("ResourceAsColor")
     @Override
     public void onRobotFocusGained(QiContext qiContext) {
+        Log.i("focus", "focus gained");
         Say say = SayBuilder.with(qiContext)
                 .withText("Nyt voit keskustella kanssani, voit kysyä kysymyksiä minusta tai Tampereesta")
                 .build();
@@ -79,7 +80,7 @@ public class DiscussionActivity extends RobotActivity implements RobotLifecycleC
         QiChatbot qiChatbot = QiChatbotBuilder.with(qiContext).withTopic(topic).build();
         Locale locale = new Locale(Language.FINNISH, Region.FINLAND);
         chat = ChatBuilder.with(qiContext).withChatbot(qiChatbot).withLocale(locale).build();
-        chat.addOnStartedListener(() -> Log.i("testi", "chatti aloitettu"));
+        chat.addOnStartedListener(() -> Log.i("testi", "chat started"));
         chat.setListeningBodyLanguage(BodyLanguageOption.DISABLED);
         Future<Void> chatFuture = chat.async().run();
         chat.addOnHeardListener(heardPhrase -> {
@@ -137,7 +138,7 @@ public class DiscussionActivity extends RobotActivity implements RobotLifecycleC
             }
         });
         qiChatbot.addOnEndedListener(endPhrase ->{
-                    Log.i("testi", "qichatbot end reason = " + endPhrase);
+                    Log.i("chat", "chat ended = " + endPhrase);
                     chatFuture.requestCancellation();
                 }
         );

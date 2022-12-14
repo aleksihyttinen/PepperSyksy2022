@@ -1,34 +1,20 @@
 package fi.tuni.pepper;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.aldebaran.qi.Future;
 import com.aldebaran.qi.sdk.QiContext;
 import com.aldebaran.qi.sdk.QiSDK;
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks;
 import com.aldebaran.qi.sdk.builder.AnimateBuilder;
 import com.aldebaran.qi.sdk.builder.AnimationBuilder;
-import com.aldebaran.qi.sdk.builder.ChatBuilder;
-import com.aldebaran.qi.sdk.builder.QiChatbotBuilder;
 import com.aldebaran.qi.sdk.builder.SayBuilder;
-import com.aldebaran.qi.sdk.builder.TopicBuilder;
 import com.aldebaran.qi.sdk.design.activity.RobotActivity;
 import com.aldebaran.qi.sdk.object.actuation.Animate;
 import com.aldebaran.qi.sdk.object.actuation.Animation;
-import com.aldebaran.qi.sdk.object.conversation.BodyLanguageOption;
-import com.aldebaran.qi.sdk.object.conversation.Chat;
-import com.aldebaran.qi.sdk.object.conversation.QiChatbot;
 import com.aldebaran.qi.sdk.object.conversation.Say;
-import com.aldebaran.qi.sdk.object.conversation.Topic;
-import com.aldebaran.qi.sdk.object.locale.Language;
-import com.aldebaran.qi.sdk.object.locale.Locale;
-import com.aldebaran.qi.sdk.object.locale.Region;
 
 
 public class MainActivity extends RobotActivity implements RobotLifecycleCallbacks {
@@ -40,11 +26,7 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
         QiSDK.register(this, this);
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
-            if(extras == null) {
-                playAnimation= true;
-            } else {
-                playAnimation= false;
-            }
+            playAnimation = extras == null;
         }
         Log.i("create", "created");
         Button peli = findViewById(R.id.peli);
@@ -67,16 +49,16 @@ public class MainActivity extends RobotActivity implements RobotLifecycleCallbac
             Animation animation = AnimationBuilder.with(qiContext).withResources(R.raw.wave).build();
             Animate animate = AnimateBuilder.with(qiContext).withAnimation(animation).build();
             animate.async().run();
+            Say say = SayBuilder.with(qiContext)
+                    .withText("Hei ihminen!")
+                    .build();
+            say.run();
         }
-        Say say = SayBuilder.with(qiContext)
-                .withText("Hei ihminen!")
-                .build();
-        say.run();
     }
 
     @Override
     public void onRobotFocusLost() {
-
+        Log.i("focus", "focus lost");
     }
 
     @Override

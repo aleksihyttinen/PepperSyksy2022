@@ -33,7 +33,6 @@ import com.aldebaran.qi.sdk.object.locale.Region;
 import java.util.HashSet;
 
 import fi.tuni.pepper.gamelogic.GameManager;
-import fi.tuni.pepper.gamelogic.HuntTheWumpus;
 import fi.tuni.pepper.gamelogic.Player;
 import fi.tuni.pepper.gamelogic.Wumpus;
 
@@ -181,8 +180,6 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         });
     }
     private void moveOrShoot(String direction) {
-        System.out.println( shootMode.toString());
-        System.out.println(direction);
         switch(direction) {
             case("ylös"): {
                 if(player.getPlayerYCoordinate() != 0) {
@@ -195,7 +192,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     shootMode = false;
                     runOnUiThread(()-> {
                         arrow_message.setText("Yritit ampua ulos kentästä");
-                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, btn_shoot.isEnabled() ? R.color.black : R.color.light_grey));
                     });
                 }
                 break;
@@ -211,7 +208,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     shootMode = false;
                     runOnUiThread(()-> {
                         arrow_message.setText("Yritit ampua ulos kentästä");
-                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, btn_shoot.isEnabled() ? R.color.black : R.color.light_grey));
                     });
                 }
                 break;
@@ -227,7 +224,7 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     shootMode = false;
                     runOnUiThread(()-> {
                         arrow_message.setText("Yritit ampua ulos kentästä");
-                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, btn_shoot.isEnabled() ? R.color.black : R.color.light_grey));
                     });
                 }
                 break;
@@ -243,34 +240,36 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
                     shootMode = false;
                     runOnUiThread(()-> {
                         arrow_message.setText("Yritit ampua ulos kentästä");
-                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+                        btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, btn_shoot.isEnabled() ? R.color.black : R.color.light_grey));
                     });
                 }
                 break;
             }
             case("ammu"): {
                 shootMode = true;
-                runOnUiThread(() -> {
-                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red));
-                });
+                runOnUiThread(() -> btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.red)));
                 break;
             }
             case("liiku"): {
                 shootMode = false;
-                runOnUiThread(()-> {
-                    btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
-                });
+                runOnUiThread(()-> btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, btn_shoot.isEnabled() ? R.color.black : R.color.light_grey)));
                 break;
             }
         }
     }
     private void enableButtons(Boolean enable) {
+        shootMode = false;
         runOnUiThread(() -> {
             btn_shoot.setEnabled(enable);
+            btn_shoot.setBackgroundTintList(ContextCompat.getColorStateList(this, enable ? R.color.black : R.color.light_grey));
             btn_left.setEnabled(enable);
+            btn_left.setBackgroundTintList(ContextCompat.getColorStateList(this, enable ? R.color.black : R.color.light_grey));
             btn_right.setEnabled(enable);
+            btn_right.setBackgroundTintList(ContextCompat.getColorStateList(this, enable ? R.color.black : R.color.light_grey));
             btn_up.setEnabled(enable);
+            btn_up.setBackgroundTintList(ContextCompat.getColorStateList(this, enable ? R.color.black : R.color.light_grey));
             btn_down.setEnabled(enable);
+            btn_down.setBackgroundTintList(ContextCompat.getColorStateList(this, enable ? R.color.black : R.color.light_grey));
         });
     }
     private void cancelChat(QiContext qiContext, Future<Void> chatFuture) {
@@ -283,25 +282,21 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
         runOnUiThread(()-> voice_btn.setText("Lopeta ääniohjaus"));
         enableButtons(false);
         new Thread(() -> {
-            Log.i("testi", "jee");
             Topic topic = TopicBuilder.with(qiContext).withResource(R.raw.moves).build();
             QiChatbot qiChatbot = QiChatbotBuilder.with(qiContext).withTopic(topic).build();
 
             Locale locale = new Locale(Language.FINNISH, Region.FINLAND);
             chat = ChatBuilder.with(qiContext).withChatbot(qiChatbot).withLocale(locale).build();
-            chat.addOnStartedListener(() -> Log.i("testi", "chatti aloitettu"));
+            chat.addOnStartedListener(() -> Log.i("chat", "chat started"));
             chat.setListeningBodyLanguage(BodyLanguageOption.DISABLED);
             qiChatbot.setSpeakingBodyLanguage(BodyLanguageOption.DISABLED);
             Future<Void> chatFuture = chat.async().run();
-            voice_btn.setOnClickListener((view) -> {
-                cancelChat(qiContext, chatFuture);
-            });
+            voice_btn.setOnClickListener((view) -> cancelChat(qiContext, chatFuture));
             chat.addOnHeardListener(heardPhrase -> {
-                Log.i("käsky", heardPhrase.toString());
                 moveOrShoot(heardPhrase.getText());
             });
             qiChatbot.addOnEndedListener(endPhrase -> {
-                Log.i("testi", "qichatbot end reason = " + endPhrase);
+                Log.i("end", "chat ended = " + endPhrase);
                 cancelChat(qiContext, chatFuture);
             });
             chatFuture.thenConsume(future -> {
@@ -332,7 +327,6 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
     }
     private void endGame(int endReason) {
         gameOn = false;
-        System.out.println("hävisit");
         runOnUiThread(() -> {
             new AlertDialog.Builder(this)
                     .setMessage(endReason == 5 ? "Voitit pelin!": endReason == 6 ? "Wumpus siirtyi päällesi, hävisit pelin": endReason == 1 ? "Törmäsit Wumpukseen, hävisit pelin" : endReason == 2 ? "Tipuit kuoppaan, hävisit pelin" : "Hävisit pelin")
@@ -387,7 +381,6 @@ public class GameActivity extends RobotActivity implements RobotLifecycleCallbac
             gm.displayMap(gm.gameMap);
             player.movePlayer(dir);
             int collisionType = gm.checkCollisionEvent(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
-            //System.out.println("Collision type: " + collisionType);
             HashSet<String> dangers = gm.parsePlayerVicinity(player.getPlayerYCoordinate(), player.getPlayerXCoordinate());
             updateDangerMessages(dangers);
             //Sets current updates to the map only after checking the collisions

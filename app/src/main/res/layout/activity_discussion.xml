@@ -10,7 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Takaisin valikkoon"
-        android:textColor="@color/black" />
+        android:textColor="@color/black"
+        android:layout_marginStart="10dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Esimerkkiaiheita:"
+            android:text="Keskusteluaiheita:"
             android:textSize="48sp"
             android:textStyle="bold"
             android:textColor="@color/black"/>

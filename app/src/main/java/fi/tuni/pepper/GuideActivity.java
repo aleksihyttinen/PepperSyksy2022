@@ -1,13 +1,14 @@
 package fi.tuni.pepper;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.aldebaran.qi.Future;
 import com.aldebaran.qi.sdk.QiContext;
 import com.aldebaran.qi.sdk.QiSDK;
 import com.aldebaran.qi.sdk.RobotLifecycleCallbacks;
@@ -16,7 +17,6 @@ import com.aldebaran.qi.sdk.design.activity.RobotActivity;
 import com.aldebaran.qi.sdk.object.conversation.BodyLanguageOption;
 import com.aldebaran.qi.sdk.object.conversation.Say;
 
-import org.w3c.dom.Text;
 
 public class GuideActivity extends RobotActivity implements RobotLifecycleCallbacks {
     private String text = "";
@@ -25,6 +25,7 @@ public class GuideActivity extends RobotActivity implements RobotLifecycleCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide);
+        Log.i("create", "created");
         QiSDK.register(this, this);
         View back = findViewById(R.id.back);
         read_btn = findViewById(R.id.read);
@@ -45,27 +46,32 @@ public class GuideActivity extends RobotActivity implements RobotLifecycleCallba
 
     @Override
     public void onRobotFocusGained(QiContext qiContext) {
-        System.out.println("focus");
+        Log.i("focus", "focus gained");
         read_btn.setOnClickListener((view) -> new Thread(() -> {
-            runOnUiThread(()-> read_btn.setEnabled(false));
-            System.out.println(text);
+            runOnUiThread(()->read_btn.setEnabled(false));
             Say say = SayBuilder.with(qiContext)
                     .withText(text)
                     .withBodyLanguageOption(BodyLanguageOption.DISABLED)
                     .build();
-            say.async().run();
-            runOnUiThread(()->read_btn.setEnabled(true));
+            Future<Void> sayFuture = say.async().run();
+            sayFuture.andThenConsume(ignore -> runOnUiThread(()->read_btn.setEnabled(true)));
         }).start());
 
     }
 
     @Override
     public void onRobotFocusLost() {
-
+        Log.i("focus", "focus lost");
     }
 
     @Override
     public void onRobotFocusRefused(String reason) {
 
+    }
+    @Override
+    protected void onDestroy() {
+        // Unregister the RobotLifecycleCallbacks for this Activity.
+        QiSDK.unregister(this, this);
+        super.onDestroy();
     }
 }
